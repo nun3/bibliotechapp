@@ -19,8 +19,25 @@ interface GoogleBooksResponse {
   }>
 }
 
+interface OpenLibraryResponse {
+  [key: string]: {
+    title: string
+    authors: Array<{ name: string }>
+    publishers: Array<{ name: string }>
+    publish_date: string
+    number_of_pages?: number
+    subjects?: Array<{ name: string }>
+    cover?: {
+      small?: string
+      medium?: string
+      large?: string
+    }
+  }
+}
+
 export class BookService {
   private static readonly GOOGLE_BOOKS_API = 'https://www.googleapis.com/books/v1/volumes'
+  private static readonly OPEN_LIBRARY_API = 'https://openlibrary.org/api/books'
 
   static async searchByISBN(isbn: string): Promise<BookData | null> {
     try {
@@ -29,24 +46,41 @@ export class BookService {
       
       console.log('Buscando ISBN:', cleanISBN)
       
-      // Buscar por ISBN
-      const response = await fetch(`${this.GOOGLE_BOOKS_API}?q=isbn:${cleanISBN}`)
+      // Tentar primeiro o Google Books
+      let bookData = await this.searchGoogleBooks(cleanISBN)
+      
+      // Se não encontrou no Google Books, tentar Open Library
+      if (!bookData) {
+        console.log('Não encontrado no Google Books, tentando Open Library...')
+        bookData = await this.searchOpenLibrary(cleanISBN)
+      }
+      
+      return bookData
+    } catch (error) {
+      console.error('Erro ao buscar livro por ISBN:', error)
+      throw new Error('Erro ao buscar informações do livro')
+    }
+  }
+
+  private static async searchGoogleBooks(isbn: string): Promise<BookData | null> {
+    try {
+      const response = await fetch(`${this.GOOGLE_BOOKS_API}?q=isbn:${isbn}`)
       
       if (!response.ok) {
-        console.error('Erro na resposta da API:', response.status, response.statusText)
-        throw new Error(`Erro na API: ${response.status}`)
+        console.error('Erro na resposta do Google Books:', response.status, response.statusText)
+        return null
       }
 
       const data: GoogleBooksResponse = await response.json()
-      console.log('Resposta da API:', data)
+      console.log('Resposta do Google Books:', data)
 
       if (!data.items || data.items.length === 0) {
-        console.log('Nenhum livro encontrado para o ISBN:', cleanISBN)
+        console.log('Nenhum livro encontrado no Google Books para o ISBN:', isbn)
         return null
       }
 
       const bookInfo = data.items[0].volumeInfo
-      console.log('Livro encontrado:', bookInfo.title)
+      console.log('Livro encontrado no Google Books:', bookInfo.title)
 
       return {
         title: bookInfo.title || 'Título não encontrado',
@@ -60,8 +94,49 @@ export class BookService {
         language: bookInfo.language || 'pt'
       }
     } catch (error) {
-      console.error('Erro ao buscar livro por ISBN:', error)
-      throw new Error('Erro ao buscar informações do livro')
+      console.error('Erro ao buscar no Google Books:', error)
+      return null
+    }
+  }
+
+  private static async searchOpenLibrary(isbn: string): Promise<BookData | null> {
+    try {
+      const response = await fetch(`${this.OPEN_LIBRARY_API}?bibkeys=ISBN:${isbn}&format=json&jscmd=data`)
+      
+      if (!response.ok) {
+        console.error('Erro na resposta da Open Library:', response.status, response.statusText)
+        return null
+      }
+
+      const data: OpenLibraryResponse = await response.json()
+      console.log('Resposta da Open Library:', data)
+
+      const bookKey = `ISBN:${isbn}`
+      if (!data[bookKey]) {
+        console.log('Nenhum livro encontrado na Open Library para o ISBN:', isbn)
+        return null
+      }
+
+      const bookInfo = data[bookKey]
+      console.log('Livro encontrado na Open Library:', bookInfo.title)
+
+      return {
+        title: bookInfo.title || 'Título não encontrado',
+        authors: bookInfo.authors?.map(author => author.name) || ['Autor desconhecido'],
+        publisher: bookInfo.publishers?.[0]?.name || 'Editora não informada',
+        publishedDate: bookInfo.publish_date || '',
+        description: 'Descrição não disponível na Open Library',
+        imageLinks: bookInfo.cover ? {
+          thumbnail: bookInfo.cover.medium || bookInfo.cover.small,
+          smallThumbnail: bookInfo.cover.small
+        } : undefined,
+        categories: bookInfo.subjects?.map(subject => subject.name) || [],
+        pageCount: bookInfo.number_of_pages,
+        language: 'pt'
+      }
+    } catch (error) {
+      console.error('Erro ao buscar na Open Library:', error)
+      return null
     }
   }
 

@@ -49,7 +49,7 @@ export function BookRegistrationForm() {
         setBookData(data)
         toast.success('Livro encontrado!')
       } else {
-        toast.error('Livro não encontrado na base de dados do Google Books. Verifique o ISBN ou tente outro.')
+        toast.error('Livro não encontrado nas bases de dados (Google Books e Open Library). Verifique o ISBN ou tente outro.')
         setBookData(null)
       }
     } catch (error: any) {
