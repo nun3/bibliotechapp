@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { Input } from '@/components/ui/Input'
 import { BookRegistrationForm } from '@/components/admin/BookRegistrationForm'
 import { 
   Shield, 
@@ -13,6 +14,8 @@ import {
   TrendingUp, 
   Settings,
   Plus,
+  Clock,
+  Bell,
   BarChart3,
   UserCheck
 } from 'lucide-react'
@@ -286,17 +289,220 @@ export function AdminProfile() {
       )}
 
       {activeTab === 'settings' && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Configurações do Sistema</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8 text-secondary-500">
-              <Settings className="h-12 w-12 mx-auto mb-4 text-secondary-300" />
-              <p>Funcionalidade em desenvolvimento</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="space-y-6">
+          {/* Configurações da Biblioteca */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Configurações da Biblioteca
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Nome da Biblioteca
+                  </label>
+                  <Input 
+                    placeholder="Biblioteca Digital" 
+                    defaultValue="Biblioteca Digital"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Período de Empréstimo (dias)
+                  </label>
+                  <Input 
+                    type="number" 
+                    placeholder="14" 
+                    defaultValue="14"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Limite de Livros por Usuário
+                  </label>
+                  <Input 
+                    type="number" 
+                    placeholder="5" 
+                    defaultValue="5"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Multa por Dia de Atraso (R$)
+                  </label>
+                  <Input 
+                    type="number" 
+                    step="0.01"
+                    placeholder="1.00" 
+                    defaultValue="1.00"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <Button>Salvar Configurações</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Configurações de Horário */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5" />
+                Horários de Funcionamento
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Horário de Abertura
+                  </label>
+                  <Input 
+                    type="time" 
+                    defaultValue="08:00"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    Horário de Fechamento
+                  </label>
+                  <Input 
+                    type="time" 
+                    defaultValue="18:00"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-secondary-700">
+                  Dias de Funcionamento
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'].map((day) => (
+                    <label key={day} className="flex items-center space-x-2">
+                      <input 
+                        type="checkbox" 
+                        defaultChecked={day !== 'Domingo'}
+                        className="rounded border-secondary-300"
+                      />
+                      <span className="text-sm">{day}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <Button>Salvar Horários</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Configurações de Notificações */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="h-5 w-5" />
+                Configurações de Notificações
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-secondary-700">
+                    Notificar empréstimos próximos do vencimento
+                  </span>
+                  <input 
+                    type="checkbox" 
+                    defaultChecked
+                    className="rounded border-secondary-300"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-secondary-700">
+                    Notificar livros em atraso
+                  </span>
+                  <input 
+                    type="checkbox" 
+                    defaultChecked
+                    className="rounded border-secondary-300"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-secondary-700">
+                    Notificar novos livros cadastrados
+                  </span>
+                  <input 
+                    type="checkbox" 
+                    defaultChecked
+                    className="rounded border-secondary-300"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-secondary-700">
+                    Notificar reservas disponíveis
+                  </span>
+                  <input 
+                    type="checkbox" 
+                    defaultChecked
+                    className="rounded border-secondary-300"
+                  />
+                </label>
+              </div>
+              <div className="flex justify-end">
+                <Button>Salvar Notificações</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Configurações de Segurança */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Configurações de Segurança
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-secondary-700">
+                    Exigir confirmação de email para novos usuários
+                  </span>
+                  <input 
+                    type="checkbox" 
+                    defaultChecked
+                    className="rounded border-secondary-300"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-secondary-700">
+                    Permitir auto-registro de usuários
+                  </span>
+                  <input 
+                    type="checkbox" 
+                    defaultChecked
+                    className="rounded border-secondary-300"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-secondary-700">
+                    Log de atividades do sistema
+                  </span>
+                  <input 
+                    type="checkbox" 
+                    defaultChecked
+                    className="rounded border-secondary-300"
+                  />
+                </label>
+              </div>
+              <div className="flex justify-end">
+                <Button>Salvar Segurança</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   )
