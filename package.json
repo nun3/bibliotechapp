@@ -30,6 +30,7 @@
     "start": "vite preview --port 3000"
   },
   "dependencies": {
+    "@google-cloud/vision": "^5.3.3",
     "@hookform/resolvers": "^3.3.2",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
@@ -38,6 +39,7 @@
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "lucide-react": "^0.294.0",
+    "quagga": "^0.12.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",

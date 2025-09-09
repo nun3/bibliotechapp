@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { BrowserMultiFormatReader } from '@zxing/library'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Camera, X, AlertCircle, Loader2, RotateCcw, Flashlight, FlashlightOff } from 'lucide-react'
+import { Camera, X, AlertCircle, Loader2, RotateCcw, Flashlight, FlashlightOff, Zap } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { AdvancedBarcodeService, BarcodeResult } from '@/services/advancedBarcodeService'
 
 interface BarcodeScannerProps {
   onScan: (isbn: string) => void
@@ -22,6 +23,9 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
   const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([])
   const [flashlightOn, setFlashlightOn] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [useAdvancedRecognition, setUseAdvancedRecognition] = useState(false)
+  const [recognitionMethod, setRecognitionMethod] = useState<string>('')
+  const [recognitionConfidence, setRecognitionConfidence] = useState<number>(0)
 
   useEffect(() => {
     // Detectar se é dispositivo móvel
@@ -126,18 +130,30 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
       await reader.decodeFromVideoDevice(
         selectedCamera,
         videoRef.current!,
-        (result, error) => {
+        async (result, error) => {
           if (result) {
             const isbn = result.getText()
-            console.log('Código escaneado:', isbn)
+            console.log('Código escaneado (ZXing):', isbn)
             
             // Validar se parece com um ISBN
             if (isValidISBNFormat(isbn)) {
+              setRecognitionMethod('ZXing')
+              setRecognitionConfidence(0.8)
               toast.success('ISBN escaneado com sucesso!')
               onScan(isbn)
               stopScanner()
             } else {
-              toast.error('Código escaneado não é um ISBN válido')
+              // Tentar reconhecimento avançado se o básico falhar
+              if (useAdvancedRecognition) {
+                await tryAdvancedRecognition()
+              } else {
+                toast.error('Código escaneado não é um ISBN válido')
+              }
+            }
+          } else {
+            // Se ZXing falhar, tentar reconhecimento avançado
+            if (useAdvancedRecognition && error?.name === 'NotFoundException') {
+              await tryAdvancedRecognition()
             }
           }
           
@@ -235,6 +251,48 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
     }
   }
 
+  const tryAdvancedRecognition = async () => {
+    if (!videoRef.current) return
+
+    try {
+      console.log('Tentando reconhecimento avançado...')
+      
+      // Capturar frame do vídeo
+      const canvas = AdvancedBarcodeService.captureVideoFrame(videoRef.current)
+      
+      // Tentar reconhecimento avançado
+      const result = await AdvancedBarcodeService.recognizeBarcode(canvas, {
+        useQuagga: true,
+        useGoogleVision: false, // Desabilitado por enquanto (requer API key)
+        minConfidence: 0.6
+      })
+
+      if (result && isValidISBNFormat(result.text)) {
+        console.log('Código reconhecido (avançado):', result.text, 'Método:', result.method)
+        setRecognitionMethod(result.method)
+        setRecognitionConfidence(result.confidence)
+        toast.success(`ISBN escaneado com sucesso! (${result.method})`)
+        onScan(result.text)
+        stopScanner()
+      } else {
+        console.log('Reconhecimento avançado falhou')
+        toast.error('Não foi possível reconhecer o código de barras')
+      }
+    } catch (error) {
+      console.error('Erro no reconhecimento avançado:', error)
+      toast.error('Erro no reconhecimento avançado')
+    }
+  }
+
+  const toggleAdvancedRecognition = () => {
+    setUseAdvancedRecognition(!useAdvancedRecognition)
+    toast.success(
+      useAdvancedRecognition 
+        ? 'Reconhecimento básico ativado' 
+        : 'Reconhecimento avançado ativado'
+    )
+  }
+
   if (!isOpen) return null
 
   return (
@@ -247,6 +305,15 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
               Escanear Código de Barras
             </CardTitle>
             <div className="flex items-center gap-2">
+              <Button
+                variant={useAdvancedRecognition ? "default" : "outline"}
+                size="sm"
+                onClick={toggleAdvancedRecognition}
+                className="p-2"
+                title={useAdvancedRecognition ? "Reconhecimento Avançado Ativo" : "Ativar Reconhecimento Avançado"}
+              >
+                <Zap className="h-4 w-4" />
+              </Button>
               {isMobile && availableCameras.length > 1 && (
                 <Button
                   variant="outline"
@@ -347,6 +414,11 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
                   <p className="text-xs text-gray-500">
                     O scanner detectará automaticamente códigos ISBN válidos
                   </p>
+                  {useAdvancedRecognition && (
+                    <p className="text-green-600 text-xs bg-green-50 px-3 py-1 rounded-lg">
+                      ⚡ Reconhecimento Avançado Ativo - Melhor para códigos danificados
+                    </p>
+                  )}
                 </div>
               )}
               
@@ -355,6 +427,11 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
                   <p className="text-white text-sm bg-black bg-opacity-70 px-4 py-2 rounded-lg backdrop-blur-sm">
                     Posicione o código de barras dentro da moldura
                   </p>
+                  {useAdvancedRecognition && (
+                    <p className="text-green-400 text-xs bg-black bg-opacity-70 px-3 py-1 rounded-lg mt-2">
+                      ⚡ Reconhecimento Avançado Ativo
+                    </p>
+                  )}
                 </div>
               )}
             </>
