@@ -190,10 +190,53 @@ src/
 
 ## 🚀 Deploy
 
-### Vercel (Recomendado)
-1. Conecte seu repositório GitHub
-2. Configure as variáveis de ambiente
-3. Deploy automático
+### Vercel (Recomendado) 🚀
+
+#### Deploy Automático via GitHub:
+1. **Conecte seu repositório:**
+   - Acesse [vercel.com](https://vercel.com)
+   - Clique em "New Project"
+   - Conecte seu repositório GitHub
+
+2. **Configurações do projeto:**
+   - Framework Preset: **Vite**
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+
+3. **Variáveis de ambiente:**
+   ```
+   VITE_SUPABASE_URL=sua_url_do_supabase
+   VITE_SUPABASE_ANON_KEY=sua_chave_anonima_do_supabase
+   ```
+
+4. **Deploy:**
+   - Clique em "Deploy"
+   - Aguarde o build completar
+   - Seu site estará disponível em `https://seu-projeto.vercel.app`
+
+#### Deploy via CLI:
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Login e deploy
+vercel login
+vercel
+
+# Configurar variáveis de ambiente
+vercel env add VITE_SUPABASE_URL
+vercel env add VITE_SUPABASE_ANON_KEY
+```
+
+#### 📋 Checklist pós-deploy:
+- [ ] Login/Registro funcionando
+- [ ] Cadastro de livros por ISBN
+- [ ] Leitor de código de barras
+- [ ] Sistema de empréstimos
+- [ ] Responsividade mobile
+
+> 📖 **Guia completo:** Veja [VERCEL_DEPLOY.md](VERCEL_DEPLOY.md) para instruções detalhadas
 
 ### Netlify
 1. Build command: `npm run build`

@@ -1,0 +1,15 @@
+# Arquivos que não devem ser enviados para o Vercel
+node_modules
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.log
+.DS_Store
+.vscode
+.idea
+*.swp
+*.swo
+coverage
+.nyc_output

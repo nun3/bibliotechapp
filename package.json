@@ -4,11 +4,30 @@
   "description": "Sistema de Biblioteca Digital Moderno",
   "type": "module",
   "private": true,
+  "homepage": "https://bibliotech.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/bibliotech.git"
+  },
+  "keywords": [
+    "biblioteca",
+    "digital",
+    "react",
+    "typescript",
+    "supabase",
+    "barcode-scanner",
+    "library-management"
+  ],
+  "author": "Seu Nome <seu-email@exemplo.com>",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:vercel": "tsc --noEmitOnError false && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "vercel-build": "vite build",
+    "start": "vite preview --port 3000"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -39,6 +58,7 @@
     "eslint-plugin-react-refresh": "^0.4.4",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
+    "terser": "^5.44.0",
     "typescript": "^5.2.2",
     "vite": "^4.5.0"
   }

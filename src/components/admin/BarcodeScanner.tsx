@@ -16,7 +16,7 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
   const readerRef = useRef<BrowserMultiFormatReader | null>(null)
   const [isScanning, setIsScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null)
+  const [, setHasPermission] = useState<boolean | null>(null)
 
   useEffect(() => {
     if (isOpen) {
