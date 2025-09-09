@@ -35,9 +35,28 @@ interface OpenLibraryResponse {
   }
 }
 
+interface BrasilAPIResponse {
+  isbn: string
+  title: string
+  subtitle?: string
+  authors: string[]
+  publisher: string
+  synopsis?: string
+  dimensions?: string
+  year?: number
+  format?: string
+  page_count?: number
+  subjects?: string[]
+  location?: string
+  retail_price?: string
+  cover_url?: string
+  provider?: string
+}
+
 export class BookService {
   private static readonly GOOGLE_BOOKS_API = 'https://www.googleapis.com/books/v1/volumes'
   private static readonly OPEN_LIBRARY_API = 'https://openlibrary.org/api/books'
+  private static readonly BRASIL_API = 'https://brasilapi.com.br/api/isbn/v1'
 
   static async searchByISBN(isbn: string): Promise<BookData | null> {
     try {
@@ -46,12 +65,18 @@ export class BookService {
       
       console.log('Buscando ISBN:', cleanISBN)
       
-      // Tentar primeiro o Google Books
+      // 1. Primeira tentativa: Google Books API
       let bookData = await this.searchGoogleBooks(cleanISBN)
       
-      // Se não encontrou no Google Books, tentar Open Library
+      // 2. Fallback: BrasilAPI (especializada em livros brasileiros)
       if (!bookData) {
-        console.log('Não encontrado no Google Books, tentando Open Library...')
+        console.log('Não encontrado no Google Books, tentando BrasilAPI...')
+        bookData = await this.searchBrasilAPI(cleanISBN)
+      }
+      
+      // 3. Fallback secundário: Open Library
+      if (!bookData) {
+        console.log('Não encontrado na BrasilAPI, tentando Open Library...')
         bookData = await this.searchOpenLibrary(cleanISBN)
       }
       
@@ -95,6 +120,45 @@ export class BookService {
       }
     } catch (error) {
       console.error('Erro ao buscar no Google Books:', error)
+      return null
+    }
+  }
+
+  private static async searchBrasilAPI(isbn: string): Promise<BookData | null> {
+    try {
+      const response = await fetch(`${this.BRASIL_API}/${isbn}`)
+      
+      if (!response.ok) {
+        console.error('Erro na resposta da BrasilAPI:', response.status, response.statusText)
+        return null
+      }
+
+      const data: BrasilAPIResponse = await response.json()
+      console.log('Resposta da BrasilAPI:', data)
+
+      if (!data.title) {
+        console.log('Nenhum livro encontrado na BrasilAPI para o ISBN:', isbn)
+        return null
+      }
+
+      console.log('Livro encontrado na BrasilAPI:', data.title)
+
+      return {
+        title: data.title || 'Título não encontrado',
+        authors: data.authors || ['Autor desconhecido'],
+        publisher: data.publisher || 'Editora não informada',
+        publishedDate: data.year ? data.year.toString() : '',
+        description: data.synopsis || 'Descrição não disponível na BrasilAPI',
+        imageLinks: data.cover_url ? {
+          thumbnail: data.cover_url,
+          smallThumbnail: data.cover_url
+        } : undefined,
+        categories: data.subjects || [],
+        pageCount: data.page_count,
+        language: 'pt'
+      }
+    } catch (error) {
+      console.error('Erro ao buscar na BrasilAPI:', error)
       return null
     }
   }
