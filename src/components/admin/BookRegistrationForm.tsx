@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -31,20 +31,22 @@ export function BookRegistrationForm() {
   const [copies, setCopies] = useState(1)
   const [showScanner, setShowScanner] = useState(false)
 
-  const handleSearch = async () => {
-    if (!isbn.trim()) {
+  const handleSearch = async (searchISBN?: string) => {
+    const isbnToSearch = searchISBN || isbn
+    
+    if (!isbnToSearch.trim()) {
       toast.error('Por favor, digite um ISBN válido')
       return
     }
 
-    if (!BookService.validateISBN(isbn)) {
+    if (!BookService.validateISBN(isbnToSearch)) {
       toast.error('ISBN inválido. Verifique o formato.')
       return
     }
 
     setLoading(true)
     try {
-      const data = await BookService.searchByISBN(isbn)
+      const data = await BookService.searchByISBN(isbnToSearch)
       if (data) {
         setBookData(data)
         toast.success('Livro encontrado!')
@@ -109,14 +111,15 @@ export function BookRegistrationForm() {
     setCopies(1)
   }
 
-  const handleBarcodeScan = (scannedISBN: string) => {
+  const handleBarcodeScan = useCallback((scannedISBN: string) => {
     setIsbn(scannedISBN)
     setShowScanner(false)
-    // Automaticamente buscar o livro após escanear
-    setTimeout(() => {
-      handleSearch()
-    }, 100)
-  }
+    // Automaticamente buscar o livro após escanear, passando o ISBN diretamente
+    // Usar requestAnimationFrame para garantir que o estado foi atualizado
+    requestAnimationFrame(() => {
+      handleSearch(scannedISBN)
+    })
+  }, [])
 
   return (
     <div className="space-y-6">
