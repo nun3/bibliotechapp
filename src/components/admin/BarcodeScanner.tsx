@@ -84,23 +84,45 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
       const reader = new BrowserMultiFormatReader()
       readerRef.current = reader
 
-      // Configurar formatos suportados (ISBN geralmente usa EAN-13 ou Code-128)
-      const hints = new Map()
-      hints.set(1, ['EAN_13', 'CODE_128', 'CODE_39', 'EAN_8'])
-
-      // Configurações otimizadas para mobile
-      const constraints = {
-        video: {
-          deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
-          width: { ideal: isMobile ? 1280 : 1920 },
-          height: { ideal: isMobile ? 720 : 1080 },
-          facingMode: isMobile ? 'environment' : 'user',
+      // Tentar diferentes configurações de resolução
+      const resolutionConfigs = [
+        // Configuração ideal - alta resolução
+        {
+          width: { ideal: isMobile ? 1920 : 2560, min: 1280 },
+          height: { ideal: isMobile ? 1080 : 1440, min: 720 },
+          focusMode: 'continuous',
+          exposureMode: 'continuous',
+          whiteBalanceMode: 'continuous',
+          iso: { ideal: 400, max: 800 }
+        },
+        // Configuração alternativa - resolução média
+        {
+          width: { ideal: 1280, min: 640 },
+          height: { ideal: 720, min: 480 },
           focusMode: 'continuous',
           exposureMode: 'continuous'
+        },
+        // Configuração básica - compatibilidade
+        {
+          width: { ideal: 640 },
+          height: { ideal: 480 }
+        }
+      ]
+
+      let constraints = {
+        video: {
+          deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
+          facingMode: isMobile ? 'environment' : 'user',
+          ...resolutionConfigs[0] // Começar com a melhor configuração
         }
       }
 
-      // Iniciar leitura
+      // Configurar hints para melhor detecção
+      const hints = new Map()
+      hints.set(1, ['EAN_13', 'CODE_128', 'CODE_39', 'EAN_8', 'UPC_A', 'UPC_E'])
+      hints.set(2, 1) // Tentar apenas uma vez por frame para melhor performance
+
+      // Iniciar leitura com configurações otimizadas
       await reader.decodeFromVideoDevice(
         selectedCamera,
         videoRef.current!,
@@ -122,7 +144,8 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
           if (error && !(error.name === 'NotFoundException')) {
             console.error('Erro no scanner:', error)
           }
-        }
+        },
+        hints
       )
 
       setHasPermission(true)
@@ -268,13 +291,17 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
                 {/* Overlay de escaneamento para mobile */}
                 {isMobile && (
                   <div className="absolute inset-0 pointer-events-none">
-                    {/* Moldura de escaneamento */}
+                    {/* Moldura de escaneamento melhorada */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-64 h-32 border-2 border-white border-opacity-50 rounded-lg">
-                        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-primary-500 rounded-tl-lg"></div>
-                        <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-primary-500 rounded-tr-lg"></div>
-                        <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-primary-500 rounded-bl-lg"></div>
-                        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-primary-500 rounded-br-lg"></div>
+                      <div className="w-72 h-40 border-2 border-white border-opacity-60 rounded-lg bg-black bg-opacity-10">
+                        {/* Cantos destacados */}
+                        <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-400 rounded-tl-lg"></div>
+                        <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-400 rounded-tr-lg"></div>
+                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-400 rounded-bl-lg"></div>
+                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-400 rounded-br-lg"></div>
+                        
+                        {/* Linha central para guia */}
+                        <div className="absolute top-1/2 left-2 right-2 h-0.5 bg-green-400 bg-opacity-50"></div>
                       </div>
                     </div>
                   </div>
@@ -296,7 +323,7 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
                       variant="outline"
                       size="sm"
                       onClick={toggleFlashlight}
-                      className="bg-black bg-opacity-50 text-white border-white"
+                      className="bg-black bg-opacity-70 text-white border-white hover:bg-opacity-90"
                     >
                       {flashlightOn ? <FlashlightOff className="h-4 w-4" /> : <Flashlight className="h-4 w-4" />}
                     </Button>
@@ -304,7 +331,7 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
                       variant="outline"
                       size="sm"
                       onClick={toggleFullscreen}
-                      className="bg-black bg-opacity-50 text-white border-white"
+                      className="bg-black bg-opacity-70 text-white border-white hover:bg-opacity-90"
                     >
                       {isFullscreen ? 'Sair' : 'Tela Cheia'}
                     </Button>
@@ -324,8 +351,8 @@ export function BarcodeScanner({ onScan, onClose, isOpen }: BarcodeScannerProps)
               )}
               
               {isMobile && (
-                <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center">
-                  <p className="text-white text-sm bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center">
+                  <p className="text-white text-sm bg-black bg-opacity-70 px-4 py-2 rounded-lg backdrop-blur-sm">
                     Posicione o código de barras dentro da moldura
                   </p>
                 </div>
