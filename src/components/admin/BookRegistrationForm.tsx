@@ -49,7 +49,7 @@ export function BookRegistrationForm() {
         setBookData(data)
         toast.success('Livro encontrado!')
       } else {
-        toast.error('Livro não encontrado. Verifique o ISBN.')
+        toast.error('Livro não encontrado na base de dados do Google Books. Verifique o ISBN ou tente outro.')
         setBookData(null)
       }
     } catch (error: any) {
@@ -236,6 +236,14 @@ export function BookRegistrationForm() {
             <div className="text-center py-8 text-secondary-500">
               <BookOpen className="h-12 w-12 mx-auto mb-4 text-secondary-300" />
               <p>Digite um ISBN válido para buscar informações do livro</p>
+              <div className="mt-4 text-sm">
+                <p className="font-medium mb-2">Exemplos de ISBNs para teste:</p>
+                <div className="space-y-1 text-xs">
+                  <p>• 9788535914849 (1984 - George Orwell)</p>
+                  <p>• 9788532523055 (O Pequeno Príncipe)</p>
+                  <p>• 9788535926550 (Dom Casmurro)</p>
+                </div>
+              </div>
             </div>
           )}
         </CardContent>

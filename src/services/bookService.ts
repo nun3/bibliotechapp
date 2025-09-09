@@ -27,20 +27,26 @@ export class BookService {
       // Limpar ISBN (remover hífens e espaços)
       const cleanISBN = isbn.replace(/[-\s]/g, '')
       
+      console.log('Buscando ISBN:', cleanISBN)
+      
       // Buscar por ISBN
       const response = await fetch(`${this.GOOGLE_BOOKS_API}?q=isbn:${cleanISBN}`)
       
       if (!response.ok) {
+        console.error('Erro na resposta da API:', response.status, response.statusText)
         throw new Error(`Erro na API: ${response.status}`)
       }
 
       const data: GoogleBooksResponse = await response.json()
+      console.log('Resposta da API:', data)
 
       if (!data.items || data.items.length === 0) {
+        console.log('Nenhum livro encontrado para o ISBN:', cleanISBN)
         return null
       }
 
       const bookInfo = data.items[0].volumeInfo
+      console.log('Livro encontrado:', bookInfo.title)
 
       return {
         title: bookInfo.title || 'Título não encontrado',
