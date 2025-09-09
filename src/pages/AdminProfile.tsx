@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/Input'
 import { BookRegistrationForm } from '@/components/admin/BookRegistrationForm'
+import { SettingsService, LibrarySettings, ScheduleSettings, NotificationSettings, SecuritySettings } from '@/services/settingsService'
 import { 
   Shield, 
   BookOpen, 
@@ -42,10 +43,112 @@ export function AdminProfile() {
   })
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'books' | 'users' | 'settings'>('overview')
+  
+  // Estados para configurações
+  const [librarySettings, setLibrarySettings] = useState<LibrarySettings>({
+    library_name: 'Biblioteca Digital',
+    loan_period_days: 14,
+    max_books_per_user: 5,
+    fine_per_day: 1.00
+  })
+  const [scheduleSettings, setScheduleSettings] = useState<ScheduleSettings>({
+    opening_time: '08:00',
+    closing_time: '18:00',
+    working_days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+  })
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
+    notify_upcoming_due: true,
+    notify_overdue: true,
+    notify_new_books: true,
+    notify_available_reservations: true
+  })
+  const [securitySettings, setSecuritySettings] = useState<SecuritySettings>({
+    require_email_confirmation: true,
+    allow_self_registration: true,
+    enable_activity_log: true
+  })
+  const [savingSettings, setSavingSettings] = useState<string | null>(null)
 
   useEffect(() => {
     fetchAdminStats()
   }, [])
+
+  useEffect(() => {
+    if (activeTab === 'settings') {
+      loadSettings()
+    }
+  }, [activeTab])
+
+  const loadSettings = async () => {
+    try {
+      const [library, schedule, notifications, security] = await Promise.all([
+        SettingsService.getLibrarySettings(),
+        SettingsService.getScheduleSettings(),
+        SettingsService.getNotificationSettings(),
+        SettingsService.getSecuritySettings()
+      ])
+
+      if (library) setLibrarySettings(library)
+      if (schedule) setScheduleSettings(schedule)
+      if (notifications) setNotificationSettings(notifications)
+      if (security) setSecuritySettings(security)
+    } catch (error) {
+      console.error('Erro ao carregar configurações:', error)
+      toast.error('Erro ao carregar configurações')
+    }
+  }
+
+  const saveLibrarySettings = async () => {
+    try {
+      setSavingSettings('library')
+      await SettingsService.saveLibrarySettings(librarySettings)
+      toast.success('Configurações da biblioteca salvas com sucesso!')
+    } catch (error) {
+      console.error('Erro ao salvar configurações da biblioteca:', error)
+      toast.error('Erro ao salvar configurações da biblioteca')
+    } finally {
+      setSavingSettings(null)
+    }
+  }
+
+  const saveScheduleSettings = async () => {
+    try {
+      setSavingSettings('schedule')
+      await SettingsService.saveScheduleSettings(scheduleSettings)
+      toast.success('Configurações de horário salvas com sucesso!')
+    } catch (error) {
+      console.error('Erro ao salvar configurações de horário:', error)
+      toast.error('Erro ao salvar configurações de horário')
+    } finally {
+      setSavingSettings(null)
+    }
+  }
+
+  const saveNotificationSettings = async () => {
+    try {
+      setSavingSettings('notifications')
+      await SettingsService.saveNotificationSettings(notificationSettings)
+      toast.success('Configurações de notificação salvas com sucesso!')
+    } catch (error) {
+      console.error('Erro ao salvar configurações de notificação:', error)
+      toast.error('Erro ao salvar configurações de notificação')
+    } finally {
+      setSavingSettings(null)
+    }
+  }
+
+  const saveSecuritySettings = async () => {
+    try {
+      setSavingSettings('security')
+      await SettingsService.saveSecuritySettings(securitySettings)
+      toast.success('Configurações de segurança salvas com sucesso!')
+    } catch (error) {
+      console.error('Erro ao salvar configurações de segurança:', error)
+      toast.error('Erro ao salvar configurações de segurança')
+    } finally {
+      setSavingSettings(null)
+    }
+  }
 
   const fetchAdminStats = async () => {
     try {
@@ -306,7 +409,8 @@ export function AdminProfile() {
                   </label>
                   <Input 
                     placeholder="Biblioteca Digital" 
-                    defaultValue="Biblioteca Digital"
+                    value={librarySettings.library_name}
+                    onChange={(e) => setLibrarySettings(prev => ({ ...prev, library_name: e.target.value }))}
                   />
                 </div>
                 <div>
@@ -316,7 +420,8 @@ export function AdminProfile() {
                   <Input 
                     type="number" 
                     placeholder="14" 
-                    defaultValue="14"
+                    value={librarySettings.loan_period_days}
+                    onChange={(e) => setLibrarySettings(prev => ({ ...prev, loan_period_days: parseInt(e.target.value) || 0 }))}
                   />
                 </div>
                 <div>
@@ -326,7 +431,8 @@ export function AdminProfile() {
                   <Input 
                     type="number" 
                     placeholder="5" 
-                    defaultValue="5"
+                    value={librarySettings.max_books_per_user}
+                    onChange={(e) => setLibrarySettings(prev => ({ ...prev, max_books_per_user: parseInt(e.target.value) || 0 }))}
                   />
                 </div>
                 <div>
@@ -337,12 +443,18 @@ export function AdminProfile() {
                     type="number" 
                     step="0.01"
                     placeholder="1.00" 
-                    defaultValue="1.00"
+                    value={librarySettings.fine_per_day}
+                    onChange={(e) => setLibrarySettings(prev => ({ ...prev, fine_per_day: parseFloat(e.target.value) || 0 }))}
                   />
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button>Salvar Configurações</Button>
+                <Button 
+                  onClick={saveLibrarySettings}
+                  disabled={savingSettings === 'library'}
+                >
+                  {savingSettings === 'library' ? 'Salvando...' : 'Salvar Configurações'}
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -363,7 +475,8 @@ export function AdminProfile() {
                   </label>
                   <Input 
                     type="time" 
-                    defaultValue="08:00"
+                    value={scheduleSettings.opening_time}
+                    onChange={(e) => setScheduleSettings(prev => ({ ...prev, opening_time: e.target.value }))}
                   />
                 </div>
                 <div>
@@ -372,7 +485,8 @@ export function AdminProfile() {
                   </label>
                   <Input 
                     type="time" 
-                    defaultValue="18:00"
+                    value={scheduleSettings.closing_time}
+                    onChange={(e) => setScheduleSettings(prev => ({ ...prev, closing_time: e.target.value }))}
                   />
                 </div>
               </div>
@@ -381,20 +495,46 @@ export function AdminProfile() {
                   Dias de Funcionamento
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'].map((day) => (
-                    <label key={day} className="flex items-center space-x-2">
+                  {[
+                    { pt: 'Segunda', en: 'monday' },
+                    { pt: 'Terça', en: 'tuesday' },
+                    { pt: 'Quarta', en: 'wednesday' },
+                    { pt: 'Quinta', en: 'thursday' },
+                    { pt: 'Sexta', en: 'friday' },
+                    { pt: 'Sábado', en: 'saturday' },
+                    { pt: 'Domingo', en: 'sunday' }
+                  ].map((day) => (
+                    <label key={day.en} className="flex items-center space-x-2">
                       <input 
                         type="checkbox" 
-                        defaultChecked={day !== 'Domingo'}
+                        checked={scheduleSettings.working_days.includes(day.en)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setScheduleSettings(prev => ({
+                              ...prev,
+                              working_days: [...prev.working_days, day.en]
+                            }))
+                          } else {
+                            setScheduleSettings(prev => ({
+                              ...prev,
+                              working_days: prev.working_days.filter(d => d !== day.en)
+                            }))
+                          }
+                        }}
                         className="rounded border-secondary-300"
                       />
-                      <span className="text-sm">{day}</span>
+                      <span className="text-sm">{day.pt}</span>
                     </label>
                   ))}
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button>Salvar Horários</Button>
+                <Button 
+                  onClick={saveScheduleSettings}
+                  disabled={savingSettings === 'schedule'}
+                >
+                  {savingSettings === 'schedule' ? 'Salvando...' : 'Salvar Horários'}
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -415,7 +555,8 @@ export function AdminProfile() {
                   </span>
                   <input 
                     type="checkbox" 
-                    defaultChecked
+                    checked={notificationSettings.notify_upcoming_due}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, notify_upcoming_due: e.target.checked }))}
                     className="rounded border-secondary-300"
                   />
                 </label>
@@ -425,7 +566,8 @@ export function AdminProfile() {
                   </span>
                   <input 
                     type="checkbox" 
-                    defaultChecked
+                    checked={notificationSettings.notify_overdue}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, notify_overdue: e.target.checked }))}
                     className="rounded border-secondary-300"
                   />
                 </label>
@@ -435,7 +577,8 @@ export function AdminProfile() {
                   </span>
                   <input 
                     type="checkbox" 
-                    defaultChecked
+                    checked={notificationSettings.notify_new_books}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, notify_new_books: e.target.checked }))}
                     className="rounded border-secondary-300"
                   />
                 </label>
@@ -445,13 +588,19 @@ export function AdminProfile() {
                   </span>
                   <input 
                     type="checkbox" 
-                    defaultChecked
+                    checked={notificationSettings.notify_available_reservations}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, notify_available_reservations: e.target.checked }))}
                     className="rounded border-secondary-300"
                   />
                 </label>
               </div>
               <div className="flex justify-end">
-                <Button>Salvar Notificações</Button>
+                <Button 
+                  onClick={saveNotificationSettings}
+                  disabled={savingSettings === 'notifications'}
+                >
+                  {savingSettings === 'notifications' ? 'Salvando...' : 'Salvar Notificações'}
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -472,7 +621,8 @@ export function AdminProfile() {
                   </span>
                   <input 
                     type="checkbox" 
-                    defaultChecked
+                    checked={securitySettings.require_email_confirmation}
+                    onChange={(e) => setSecuritySettings(prev => ({ ...prev, require_email_confirmation: e.target.checked }))}
                     className="rounded border-secondary-300"
                   />
                 </label>
@@ -482,7 +632,8 @@ export function AdminProfile() {
                   </span>
                   <input 
                     type="checkbox" 
-                    defaultChecked
+                    checked={securitySettings.allow_self_registration}
+                    onChange={(e) => setSecuritySettings(prev => ({ ...prev, allow_self_registration: e.target.checked }))}
                     className="rounded border-secondary-300"
                   />
                 </label>
@@ -492,13 +643,19 @@ export function AdminProfile() {
                   </span>
                   <input 
                     type="checkbox" 
-                    defaultChecked
+                    checked={securitySettings.enable_activity_log}
+                    onChange={(e) => setSecuritySettings(prev => ({ ...prev, enable_activity_log: e.target.checked }))}
                     className="rounded border-secondary-300"
                   />
                 </label>
               </div>
               <div className="flex justify-end">
-                <Button>Salvar Segurança</Button>
+                <Button 
+                  onClick={saveSecuritySettings}
+                  disabled={savingSettings === 'security'}
+                >
+                  {savingSettings === 'security' ? 'Salvando...' : 'Salvar Segurança'}
+                </Button>
               </div>
             </CardContent>
           </Card>
