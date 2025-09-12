@@ -266,61 +266,61 @@ export function UserManagement() {
       {/* Estatísticas */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total de Usuários</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Total de Usuários</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-6 w-6 md:h-8 md:w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Usuários Ativos</p>
-                <p className="text-2xl font-bold text-green-600">{stats.activeUsers}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Usuários Ativos</p>
+                <p className="text-xl md:text-2xl font-bold text-green-600">{stats.activeUsers}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Usuários Bloqueados</p>
-                <p className="text-2xl font-bold text-red-600">{stats.blockedUsers}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Usuários Bloqueados</p>
+                <p className="text-xl md:text-2xl font-bold text-red-600">{stats.blockedUsers}</p>
               </div>
-              <XCircle className="h-8 w-8 text-red-500" />
+              <XCircle className="h-6 w-6 md:h-8 md:w-8 text-red-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Administradores</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.adminUsers}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Administradores</p>
+                <p className="text-xl md:text-2xl font-bold text-purple-600">{stats.adminUsers}</p>
               </div>
-              <Shield className="h-8 w-8 text-purple-500" />
+              <Shield className="h-6 w-6 md:h-8 md:w-8 text-purple-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Novos este Mês</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.newUsersThisMonth}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Novos este Mês</p>
+                <p className="text-xl md:text-2xl font-bold text-orange-600">{stats.newUsersThisMonth}</p>
               </div>
-              <Calendar className="h-8 w-8 text-orange-500" />
+              <Calendar className="h-6 w-6 md:h-8 md:w-8 text-orange-500" />
             </div>
           </CardContent>
         </Card>

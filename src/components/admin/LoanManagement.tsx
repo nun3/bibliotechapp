@@ -227,61 +227,61 @@ export function LoanManagement() {
       {/* Estatísticas */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Empréstimos Ativos</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.totalActiveLoans}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Empréstimos Ativos</p>
+                <p className="text-xl md:text-2xl font-bold text-blue-600">{stats.totalActiveLoans}</p>
               </div>
-              <BookOpen className="h-8 w-8 text-blue-500" />
+              <BookOpen className="h-6 w-6 md:h-8 md:w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Em Atraso</p>
-                <p className="text-2xl font-bold text-red-600">{stats.overdueLoans}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Em Atraso</p>
+                <p className="text-xl md:text-2xl font-bold text-red-600">{stats.overdueLoans}</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <AlertTriangle className="h-6 w-6 md:h-8 md:w-8 text-red-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Devolvidos</p>
-                <p className="text-2xl font-bold text-green-600">{stats.totalReturnedLoans}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Devolvidos</p>
+                <p className="text-xl md:text-2xl font-bold text-green-600">{stats.totalReturnedLoans}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Empréstimos Hoje</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.loansToday}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Empréstimos Hoje</p>
+                <p className="text-xl md:text-2xl font-bold text-orange-600">{stats.loansToday}</p>
               </div>
-              <Calendar className="h-8 w-8 text-orange-500" />
+              <Calendar className="h-6 w-6 md:h-8 md:w-8 text-orange-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Livros Populares</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.popularBooks.length}</p>
+                <p className="text-xs md:text-sm font-medium text-gray-600">Livros Populares</p>
+                <p className="text-xl md:text-2xl font-bold text-purple-600">{stats.popularBooks.length}</p>
               </div>
-              <Book className="h-8 w-8 text-purple-500" />
+              <Book className="h-6 w-6 md:h-8 md:w-8 text-purple-500" />
             </div>
           </CardContent>
         </Card>
