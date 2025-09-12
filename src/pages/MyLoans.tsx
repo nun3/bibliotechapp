@@ -229,100 +229,116 @@ export function MyLoans() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-secondary-900">Meus Empréstimos</h1>
-          <p className="text-secondary-600 mt-2">
-            Gerencie seus livros emprestados
+          <h1 className="text-2xl md:text-3xl font-bold text-secondary-900">Meus Empréstimos</h1>
+          <p className="text-secondary-600 mt-1 md:mt-2 text-sm md:text-base">
+            <span className="hidden sm:inline">Gerencie seus livros emprestados</span>
+            <span className="sm:hidden">Seus livros</span>
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
             onClick={() => setShowReport(!showReport)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-xs sm:text-sm"
           >
             <BarChart3 className="h-4 w-4" />
-            {showReport ? 'Ocultar Relatório' : 'Ver Relatório'}
+            <span className="hidden sm:inline">
+              {showReport ? 'Ocultar Relatório' : 'Ver Relatório'}
+            </span>
+            <span className="sm:hidden">Relatório</span>
           </Button>
           <Button
             variant="outline"
             onClick={() => setShowHistoryModal(true)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-xs sm:text-sm"
           >
             <History className="h-4 w-4" />
-            Ver Histórico
+            <span className="hidden sm:inline">Ver Histórico</span>
+            <span className="sm:hidden">Histórico</span>
           </Button>
         </div>
       </div>
 
       {/* Estatísticas */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg border border-secondary-200">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-primary-500" />
-            <span className="text-sm font-medium text-secondary-600">Total</span>
+            <BookOpen className="h-4 w-4 md:h-5 md:w-5 text-primary-500" />
+            <span className="text-xs md:text-sm font-medium text-secondary-600">Total</span>
           </div>
-          <p className="text-2xl font-bold text-secondary-900">{getLoanStats().total}</p>
+          <p className="text-xl md:text-2xl font-bold text-secondary-900">{getLoanStats().total}</p>
         </div>
         
-        <div className="bg-white p-4 rounded-lg border border-secondary-200">
+        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
           <div className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-blue-500" />
-            <span className="text-sm font-medium text-secondary-600">Ativos</span>
+            <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
+            <span className="text-xs md:text-sm font-medium text-secondary-600">Ativos</span>
           </div>
-          <p className="text-2xl font-bold text-blue-600">{getLoanStats().active}</p>
+          <p className="text-xl md:text-2xl font-bold text-blue-600">{getLoanStats().active}</p>
         </div>
         
-        <div className="bg-white p-4 rounded-lg border border-secondary-200">
+        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
           <div className="flex items-center gap-2">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-            <span className="text-sm font-medium text-secondary-600">Devolvidos</span>
+            <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
+            <span className="text-xs md:text-sm font-medium text-secondary-600">Devolvidos</span>
           </div>
-          <p className="text-2xl font-bold text-green-600">{getLoanStats().returned}</p>
+          <p className="text-xl md:text-2xl font-bold text-green-600">{getLoanStats().returned}</p>
         </div>
         
-        <div className="bg-white p-4 rounded-lg border border-secondary-200">
+        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-red-500" />
-            <span className="text-sm font-medium text-secondary-600">Atrasados</span>
+            <AlertCircle className="h-4 w-4 md:h-5 md:w-5 text-red-500" />
+            <span className="text-xs md:text-sm font-medium text-secondary-600">Atrasados</span>
           </div>
-          <p className="text-2xl font-bold text-red-600">{getLoanStats().overdue}</p>
+          <p className="text-xl md:text-2xl font-bold text-red-600">{getLoanStats().overdue}</p>
         </div>
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
         <Button
           variant={filter === 'all' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('all')}
+          className="text-xs sm:text-sm whitespace-nowrap"
         >
-          Todos ({getLoanStats().total})
+          <span className="hidden sm:inline">Todos</span>
+          <span className="sm:hidden">T</span>
+          ({getLoanStats().total})
         </Button>
         <Button
           variant={filter === 'active' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('active')}
+          className="text-xs sm:text-sm whitespace-nowrap"
         >
-          Ativos ({getLoanStats().active})
+          <span className="hidden sm:inline">Ativos</span>
+          <span className="sm:hidden">A</span>
+          ({getLoanStats().active})
         </Button>
         <Button
           variant={filter === 'returned' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('returned')}
+          className="text-xs sm:text-sm whitespace-nowrap"
         >
-          Devolvidos ({getLoanStats().returned})
+          <span className="hidden sm:inline">Devolvidos</span>
+          <span className="sm:hidden">D</span>
+          ({getLoanStats().returned})
         </Button>
         <Button
           variant={filter === 'overdue' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('overdue')}
-          className={filter === 'overdue' ? 'bg-red-500 hover:bg-red-600' : ''}
+          className={`text-xs sm:text-sm whitespace-nowrap ${filter === 'overdue' ? 'bg-red-500 hover:bg-red-600' : ''}`}
         >
-          Atrasados ({getLoanStats().overdue})
+          <span className="hidden sm:inline">Atrasados</span>
+          <span className="sm:hidden">AT</span>
+          ({getLoanStats().overdue})
         </Button>
       </div>
 
@@ -359,31 +375,31 @@ export function MyLoans() {
 
             return (
               <Card key={loan.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-3 md:gap-4">
                     {/* Capa do livro */}
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 self-center sm:self-start">
                       {loan.books.cover_url ? (
                         <img
                           src={loan.books.cover_url}
                           alt={loan.books.title}
-                          className="w-16 h-20 object-cover rounded-lg border border-secondary-200"
+                          className="w-12 h-16 sm:w-16 sm:h-20 object-cover rounded-lg border border-secondary-200"
                         />
                       ) : (
-                        <div className="w-16 h-20 bg-secondary-100 rounded-lg border border-secondary-200 flex items-center justify-center">
-                          <BookOpen className="h-8 w-8 text-secondary-400" />
+                        <div className="w-12 h-16 sm:w-16 sm:h-20 bg-secondary-100 rounded-lg border border-secondary-200 flex items-center justify-center">
+                          <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-secondary-400" />
                         </div>
                       )}
                     </div>
 
                     {/* Informações do livro */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-secondary-900 truncate">
+                      <h3 className="text-base md:text-lg font-semibold text-secondary-900 truncate">
                         {loan.books.title}
                       </h3>
-                      <p className="text-secondary-600 mb-2">por {loan.books.author}</p>
+                      <p className="text-sm md:text-base text-secondary-600 mb-2">por {loan.books.author}</p>
                       
-                      <div className="space-y-1 text-xs text-secondary-500">
+                      <div className="space-y-1 text-xs md:text-xs text-secondary-500">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
                           Emprestado em: {formatDate(loan.loan_date)}
@@ -401,7 +417,7 @@ export function MyLoans() {
                       </div>
                       
                       {/* Status e ações */}
-                      <div className="mt-3 flex items-center justify-between">
+                      <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
                         <div className="flex items-center gap-2">
                           {isActive ? (
                             <>
@@ -435,12 +451,13 @@ export function MyLoans() {
                             size="sm"
                             onClick={() => handleReturnBook(loan.id, loan.book_id)}
                             disabled={returningLoan === loan.id}
-                            className="ml-4"
+                            className="w-full sm:w-auto sm:ml-4 text-xs sm:text-sm"
                           >
                             {returningLoan === loan.id ? (
                               <>
                                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
-                                Devolvendo...
+                                <span className="hidden sm:inline">Devolvendo...</span>
+                                <span className="sm:hidden">...</span>
                               </>
                             ) : (
                               'Devolver'

@@ -225,7 +225,7 @@ export function LoanManagement() {
       </div>
 
       {/* Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -290,7 +290,7 @@ export function LoanManagement() {
       {/* Filtros e Busca */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4">
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -359,7 +359,7 @@ export function LoanManagement() {
               <p className="text-gray-600">Nenhum empréstimo encontrado</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>

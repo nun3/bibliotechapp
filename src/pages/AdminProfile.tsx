@@ -214,41 +214,51 @@ export function AdminProfile() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-secondary-900 flex items-center gap-3">
-            <Shield className="h-8 w-8 text-primary-600" />
-            Painel Administrativo
+          <h1 className="text-2xl md:text-3xl font-bold text-secondary-900 flex items-center gap-2 md:gap-3">
+            <Shield className="h-6 w-6 md:h-8 md:w-8 text-primary-600" />
+            <span className="hidden sm:inline">Painel Administrativo</span>
+            <span className="sm:hidden">Admin</span>
           </h1>
-          <p className="text-secondary-600 mt-2">
-            Gerencie a biblioteca digital
+          <p className="text-secondary-600 mt-1 md:mt-2 text-sm md:text-base">
+            <span className="hidden sm:inline">Gerencie a biblioteca digital</span>
+            <span className="sm:hidden">Biblioteca digital</span>
           </p>
         </div>
-        <Badge variant="secondary" className="bg-primary-100 text-primary-800 px-3 py-1">
+        <Badge variant="secondary" className="bg-primary-100 text-primary-800 px-3 py-1 self-start sm:self-auto">
           <UserCheck className="h-4 w-4 mr-1" />
-          Administrador
+          <span className="hidden sm:inline">Administrador</span>
+          <span className="sm:hidden">Admin</span>
         </Badge>
       </div>
 
       {/* Tabs */}
       <div className="border-b border-secondary-200">
-        <nav className="flex space-x-8">
+        <nav className="flex overflow-x-auto space-x-2 md:space-x-8">
           {tabs.map((tab) => {
             const Icon = tab.icon
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                className={`flex items-center gap-1 md:gap-2 py-3 md:py-4 px-2 md:px-1 border-b-2 font-medium text-xs md:text-sm transition-colors whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300'
                 }`}
               >
-                <Icon className="h-4 w-4" />
-                {tab.label}
+                <Icon className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">
+                  {tab.id === 'overview' && 'Visão'}
+                  {tab.id === 'books' && 'Livros'}
+                  {tab.id === 'users' && 'Usuários'}
+                  {tab.id === 'loans' && 'Empréstimos'}
+                  {tab.id === 'settings' && 'Config'}
+                </span>
               </button>
             )
           })}
@@ -259,7 +269,7 @@ export function AdminProfile() {
       {activeTab === 'overview' && (
         <div className="space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -339,34 +349,34 @@ export function AdminProfile() {
               <CardTitle>Ações Rápidas</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                 <Button 
                   variant="outline" 
-                  className="h-auto p-4 flex flex-col items-center gap-2"
+                  className="h-auto p-3 md:p-4 flex flex-col items-center gap-1 md:gap-2"
                   onClick={() => setActiveTab('books')}
                 >
-                  <Plus className="h-6 w-6 text-primary-600" />
-                  <span className="font-medium">Cadastrar Livro</span>
-                  <span className="text-xs text-secondary-500">Adicionar novo livro ao acervo</span>
+                  <Plus className="h-5 w-5 md:h-6 md:w-6 text-primary-600" />
+                  <span className="font-medium text-xs md:text-sm">Cadastrar Livro</span>
+                  <span className="text-xs text-secondary-500 hidden md:block">Adicionar novo livro ao acervo</span>
                 </Button>
 
                 <Button 
                   variant="outline" 
-                  className="h-auto p-4 flex flex-col items-center gap-2"
+                  className="h-auto p-3 md:p-4 flex flex-col items-center gap-1 md:gap-2"
                   onClick={() => setActiveTab('users')}
                 >
-                  <Users className="h-6 w-6 text-blue-600" />
-                  <span className="font-medium">Gerenciar Usuários</span>
-                  <span className="text-xs text-secondary-500">Ver e gerenciar usuários</span>
+                  <Users className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
+                  <span className="font-medium text-xs md:text-sm">Gerenciar Usuários</span>
+                  <span className="text-xs text-secondary-500 hidden md:block">Ver e gerenciar usuários</span>
                 </Button>
 
                 <Button 
                   variant="outline" 
-                  className="h-auto p-4 flex flex-col items-center gap-2"
+                  className="h-auto p-3 md:p-4 flex flex-col items-center gap-1 md:gap-2"
                   onClick={() => setActiveTab('loans')}
                 >
-                  <RotateCcw className="h-6 w-6 text-green-600" />
-                  <span className="font-medium">Gerenciar Empréstimos</span>
+                  <RotateCcw className="h-5 w-5 md:h-6 md:w-6 text-green-600" />
+                  <span className="font-medium text-xs md:text-sm">Gerenciar Empréstimos</span>
                   <span className="text-xs text-secondary-500">Realizar empréstimos e devoluções</span>
                 </Button>
 
