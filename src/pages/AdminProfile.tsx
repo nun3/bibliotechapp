@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/Input'
 import { BookRegistrationForm } from '@/components/admin/BookRegistrationForm'
+import { UserManagement } from '@/components/admin/UserManagement'
+import { LoanManagement } from '@/components/admin/LoanManagement'
 import { SettingsService, LibrarySettings, ScheduleSettings, NotificationSettings, SecuritySettings } from '@/services/settingsService'
 import { 
   Shield, 
@@ -18,7 +20,8 @@ import {
   Clock,
   Bell,
   BarChart3,
-  UserCheck
+  UserCheck,
+  RotateCcw
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -42,7 +45,7 @@ export function AdminProfile() {
     overdueLoans: 0
   })
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'books' | 'users' | 'settings'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'books' | 'users' | 'loans' | 'settings'>('overview')
   
   // Estados para configurações
   const [librarySettings, setLibrarySettings] = useState<LibrarySettings>({
@@ -195,6 +198,7 @@ export function AdminProfile() {
     { id: 'overview', label: 'Visão Geral', icon: BarChart3 },
     { id: 'books', label: 'Gerenciar Livros', icon: BookOpen },
     { id: 'users', label: 'Usuários', icon: Users },
+    { id: 'loans', label: 'Empréstimos', icon: RotateCcw },
     { id: 'settings', label: 'Configurações', icon: Settings }
   ]
 
@@ -359,6 +363,16 @@ export function AdminProfile() {
                 <Button 
                   variant="outline" 
                   className="h-auto p-4 flex flex-col items-center gap-2"
+                  onClick={() => setActiveTab('loans')}
+                >
+                  <RotateCcw className="h-6 w-6 text-green-600" />
+                  <span className="font-medium">Gerenciar Empréstimos</span>
+                  <span className="text-xs text-secondary-500">Realizar empréstimos e devoluções</span>
+                </Button>
+
+                <Button 
+                  variant="outline" 
+                  className="h-auto p-4 flex flex-col items-center gap-2"
                   onClick={() => setActiveTab('settings')}
                 >
                   <Settings className="h-6 w-6 text-gray-600" />
@@ -378,17 +392,11 @@ export function AdminProfile() {
       )}
 
       {activeTab === 'users' && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Gerenciar Usuários</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8 text-secondary-500">
-              <Users className="h-12 w-12 mx-auto mb-4 text-secondary-300" />
-              <p>Funcionalidade em desenvolvimento</p>
-            </div>
-          </CardContent>
-        </Card>
+        <UserManagement />
+      )}
+
+      {activeTab === 'loans' && (
+        <LoanManagement />
       )}
 
       {activeTab === 'settings' && (

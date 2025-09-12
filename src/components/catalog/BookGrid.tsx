@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { BookCard } from './BookCard'
 import { BookDetailsModal } from './BookDetailsModal'
 import { Book } from '@/lib/supabase'
@@ -15,6 +16,7 @@ interface BookGridProps {
 }
 
 export function BookGrid({ onLoan, onReserve }: BookGridProps) {
+  const [searchParams] = useSearchParams()
   const [books, setBooks] = useState<Book[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -66,9 +68,22 @@ export function BookGrid({ onLoan, onReserve }: BookGridProps) {
     }
   }
 
+  // Ler parâmetro de busca da URL na inicialização
+  useEffect(() => {
+    const queryParam = searchParams.get('q')
+    if (queryParam) {
+      setSearchTerm(queryParam)
+      // Focar no campo de busca se houver parâmetro
+      if (searchInputRef.current) {
+        searchInputRef.current.focus()
+      }
+    }
+  }, [searchParams])
+
   // Carregar livros na inicialização
   useEffect(() => {
-    fetchBooks('', '', true) // isInitial = true
+    const queryParam = searchParams.get('q')
+    fetchBooks(queryParam || '', '', true) // isInitial = true
   }, []) // Array vazio - executa apenas uma vez
 
   const handleSearch = (e?: React.FormEvent) => {
