@@ -252,14 +252,18 @@ export function UserManagement() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gerenciar Usuários</h1>
-          <p className="text-gray-600">Gerencie usuários, permissões e status da biblioteca</p>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Gerenciar Usuários</h1>
+          <p className="text-gray-600 text-sm md:text-base">
+            <span className="hidden sm:inline">Gerencie usuários, permissões e status da biblioteca</span>
+            <span className="sm:hidden">Gerenciar usuários</span>
+          </p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2">
+        <Button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2 text-sm">
           <UserPlus className="h-4 w-4" />
-          Novo Usuário
+          <span className="hidden sm:inline">Novo Usuário</span>
+          <span className="sm:hidden">Novo</span>
         </Button>
       </div>
 
@@ -342,7 +346,7 @@ export function UserManagement() {
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
               <select
                 value={selectedRole}
                 onChange={(e) => handleFilterChange('role', e.target.value)}

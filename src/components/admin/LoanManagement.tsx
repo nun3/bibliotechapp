@@ -203,23 +203,28 @@ export function LoanManagement() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gerenciar Empréstimos</h1>
-          <p className="text-gray-600">Realize empréstimos e devoluções para usuários da biblioteca</p>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Gerenciar Empréstimos</h1>
+          <p className="text-gray-600 text-sm md:text-base">
+            <span className="hidden sm:inline">Realize empréstimos e devoluções para usuários da biblioteca</span>
+            <span className="sm:hidden">Empréstimos e devoluções</span>
+          </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button 
             variant="outline" 
             onClick={() => setShowDiagnostics(true)} 
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-sm"
           >
             <AlertTriangle className="h-4 w-4" />
-            Diagnóstico
+            <span className="hidden sm:inline">Diagnóstico</span>
+            <span className="sm:hidden">Diag</span>
           </Button>
-          <Button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2">
+          <Button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2 text-sm">
             <Plus className="h-4 w-4" />
-            Novo Empréstimo
+            <span className="hidden sm:inline">Novo Empréstimo</span>
+            <span className="sm:hidden">Novo</span>
           </Button>
         </div>
       </div>
@@ -303,7 +308,7 @@ export function LoanManagement() {
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
               <select
                 value={selectedStatus}
                 onChange={(e) => handleFilterChange('status', e.target.value)}

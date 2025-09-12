@@ -131,7 +131,7 @@ export function BookRegistrationForm() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1">
               <Input
                 label="ISBN"
@@ -141,15 +141,17 @@ export function BookRegistrationForm() {
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
             </div>
-            <div className="flex gap-2 self-end">
+            <div className="flex flex-col sm:flex-row gap-2 sm:self-end">
               <Button 
                 onClick={handleSearch} 
                 disabled={loading || !isbn.trim()}
+                className="text-sm"
               >
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Buscando...
+                    <span className="hidden sm:inline">Buscando...</span>
+                    <span className="sm:hidden">...</span>
                   </>
                 ) : (
                   <>
@@ -162,6 +164,7 @@ export function BookRegistrationForm() {
                 variant="outline"
                 onClick={() => setShowScanner(true)}
                 title="Escanear código de barras"
+                className="text-sm"
               >
                 <Camera className="h-4 w-4 mr-2" />
                 Escanear
