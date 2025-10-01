@@ -30,11 +30,21 @@ export function BookRegistrationForm() {
   const [saving, setSaving] = useState(false)
   const [copies, setCopies] = useState(1)
   const [showScanner, setShowScanner] = useState(false)
+  const [manualMode, setManualMode] = useState(false)
+  const [manualBookData, setManualBookData] = useState({
+    title: '',
+    author: '',
+    publisher: '',
+    publicationYear: '',
+    genre: '',
+    description: '',
+    isbn: ''
+  })
 
   const handleSearch = async (searchISBN?: string) => {
-    const isbnToSearch = searchISBN || isbn
+    const isbnToSearch = String(searchISBN || isbn || '').trim()
     
-    if (!isbnToSearch.trim()) {
+    if (!isbnToSearch) {
       toast.error('Por favor, digite um ISBN válido')
       return
     }
@@ -105,10 +115,69 @@ export function BookRegistrationForm() {
     }
   }
 
+  const handleSaveManual = async () => {
+    if (!manualBookData.title.trim() || !manualBookData.author.trim()) {
+      toast.error('Título e autor são obrigatórios')
+      return
+    }
+
+    setSaving(true)
+    try {
+      const { error } = await supabase
+        .from('books')
+        .insert({
+          title: manualBookData.title,
+          author: manualBookData.author,
+          isbn: manualBookData.isbn || null,
+          publisher: manualBookData.publisher || null,
+          publication_year: manualBookData.publicationYear ? parseInt(manualBookData.publicationYear) : null,
+          genre: manualBookData.genre || 'Geral',
+          description: manualBookData.description || null,
+          cover_url: null,
+          total_copies: copies,
+          available_copies: copies
+        })
+
+      if (error) {
+        if (error.code === '23505') {
+          toast.error('Este livro já está cadastrado no sistema')
+        } else {
+          throw error
+        }
+      } else {
+        toast.success('Livro cadastrado com sucesso!')
+        setManualBookData({
+          title: '',
+          author: '',
+          publisher: '',
+          publicationYear: '',
+          genre: '',
+          description: '',
+          isbn: ''
+        })
+        setCopies(1)
+      }
+    } catch (error: any) {
+      console.error('Erro ao salvar livro:', error)
+      toast.error(`Erro ao salvar livro: ${error.message}`)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const handleClear = () => {
     setIsbn('')
     setBookData(null)
     setCopies(1)
+    setManualBookData({
+      title: '',
+      author: '',
+      publisher: '',
+      publicationYear: '',
+      genre: '',
+      description: '',
+      isbn: ''
+    })
   }
 
   const handleBarcodeScan = useCallback((scannedISBN: string) => {
@@ -125,52 +194,169 @@ export function BookRegistrationForm() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5" />
-            Cadastro de Livros por ISBN
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <div className="flex-1">
-              <Input
-                label="ISBN"
-                placeholder="Digite o ISBN do livro (10 ou 13 dígitos)"
-                value={isbn}
-                onChange={(e) => setIsbn(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:self-end">
-              <Button 
-                onClick={handleSearch} 
-                disabled={loading || !isbn.trim()}
-                className="text-sm"
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              {manualMode ? 'Cadastro Manual de Livros' : 'Cadastro de Livros por ISBN'}
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button
+                variant={!manualMode ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setManualMode(false)
+                  handleClear()
+                }}
               >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    <span className="hidden sm:inline">Buscando...</span>
-                    <span className="sm:hidden">...</span>
-                  </>
-                ) : (
-                  <>
-                    <Search className="h-4 w-4 mr-2" />
-                    Buscar
-                  </>
-                )}
+                Buscar por ISBN
               </Button>
-              <Button 
-                variant="outline"
-                onClick={() => setShowScanner(true)}
-                title="Escanear código de barras"
-                className="text-sm"
+              <Button
+                variant={manualMode ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setManualMode(true)
+                  handleClear()
+                }}
               >
-                <Camera className="h-4 w-4 mr-2" />
-                Escanear
+                Cadastrar Manualmente
               </Button>
             </div>
           </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!manualMode ? (
+            <>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="flex-1">
+                  <Input
+                    label="ISBN"
+                    placeholder="Digite o ISBN do livro (10 ou 13 dígitos)"
+                    value={isbn}
+                    onChange={(e) => setIsbn(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2 sm:self-end">
+                  <Button 
+                    onClick={() => handleSearch()} 
+                    disabled={loading || !String(isbn || '').trim()}
+                    className="text-sm"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        <span className="hidden sm:inline">Buscando...</span>
+                        <span className="sm:hidden">...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Search className="h-4 w-4 mr-2" />
+                        Buscar
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={() => setShowScanner(true)}
+                    title="Escanear código de barras"
+                    className="text-sm"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Escanear
+                  </Button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label="Título *"
+                  placeholder="Digite o título do livro"
+                  value={manualBookData.title}
+                  onChange={(e) => setManualBookData(prev => ({ ...prev, title: e.target.value }))}
+                />
+                <Input
+                  label="Autor(es) *"
+                  placeholder="Digite o nome do(s) autor(es)"
+                  value={manualBookData.author}
+                  onChange={(e) => setManualBookData(prev => ({ ...prev, author: e.target.value }))}
+                />
+                <Input
+                  label="Editora"
+                  placeholder="Digite a editora"
+                  value={manualBookData.publisher}
+                  onChange={(e) => setManualBookData(prev => ({ ...prev, publisher: e.target.value }))}
+                />
+                <Input
+                  label="Ano de Publicação"
+                  placeholder="Ex: 2023"
+                  type="number"
+                  min="1000"
+                  max="2030"
+                  value={manualBookData.publicationYear}
+                  onChange={(e) => setManualBookData(prev => ({ ...prev, publicationYear: e.target.value }))}
+                />
+                <Input
+                  label="Gênero"
+                  placeholder="Ex: Ficção, Romance, Técnico..."
+                  value={manualBookData.genre}
+                  onChange={(e) => setManualBookData(prev => ({ ...prev, genre: e.target.value }))}
+                />
+                <Input
+                  label="ISBN (opcional)"
+                  placeholder="Digite o ISBN se disponível"
+                  value={manualBookData.isbn}
+                  onChange={(e) => setManualBookData(prev => ({ ...prev, isbn: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  Descrição
+                </label>
+                <textarea
+                  placeholder="Digite uma breve descrição do livro"
+                  value={manualBookData.description}
+                  onChange={(e) => setManualBookData(prev => ({ ...prev, description: e.target.value }))}
+                  rows={3}
+                  className="flex w-full rounded-lg border border-secondary-300 bg-white px-3 py-2 text-sm placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                />
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-secondary-700">
+                    Número de cópias:
+                  </label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={copies}
+                    onChange={(e) => setCopies(parseInt(e.target.value) || 1)}
+                    className="w-20"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleSaveManual} disabled={saving}>
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Cadastrar Livro
+                    </>
+                  )}
+                </Button>
+                <Button variant="outline" onClick={handleClear}>
+                  Limpar
+                </Button>
+              </div>
+            </div>
+          )}
 
           {bookData && (
             <div className="border border-secondary-200 rounded-lg p-4 bg-secondary-50">
@@ -238,7 +424,7 @@ export function BookRegistrationForm() {
             </div>
           )}
 
-          {!bookData && !loading && (
+          {!bookData && !loading && !manualMode && (
             <div className="text-center py-8 text-secondary-500">
               <BookOpen className="h-12 w-12 mx-auto mb-4 text-secondary-300" />
               <p>Digite um ISBN válido para buscar informações do livro</p>
@@ -250,6 +436,15 @@ export function BookRegistrationForm() {
                   <p>• 9788532523055 (O Pequeno Príncipe)</p>
                 </div>
               </div>
+            </div>
+          )}
+
+          {manualMode && (
+            <div className="text-center py-4 text-secondary-500">
+              <p className="text-sm">
+                <strong>Dica:</strong> Campos marcados com * são obrigatórios. 
+                O ISBN é opcional no cadastro manual.
+              </p>
             </div>
           )}
         </CardContent>
@@ -272,12 +467,19 @@ export function BookRegistrationForm() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm text-secondary-600">
+            <p><strong>Modo Buscar por ISBN:</strong></p>
             <p>• <strong>Digite</strong> o ISBN do livro (10 ou 13 dígitos) no campo acima, ou</p>
             <p>• <strong>Escanee</strong> o código de barras do livro usando o botão "Escanear"</p>
             <p>• O sistema buscará automaticamente as informações do livro</p>
             <p>• Verifique os dados encontrados e ajuste se necessário</p>
             <p>• Defina o número de cópias disponíveis</p>
             <p>• Clique em "Cadastrar Livro" para adicionar ao acervo</p>
+            
+            <p className="mt-4"><strong>Modo Cadastro Manual:</strong></p>
+            <p>• <strong>Preencha</strong> os campos obrigatórios (Título e Autor)</p>
+            <p>• <strong>Adicione</strong> informações opcionais como editora, ano, gênero, ISBN</p>
+            <p>• <strong>Defina</strong> o número de cópias disponíveis</p>
+            <p>• <strong>Clique</strong> em "Cadastrar Livro" para adicionar ao acervo</p>
           </div>
         </CardContent>
       </Card>

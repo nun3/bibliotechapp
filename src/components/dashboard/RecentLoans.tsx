@@ -21,17 +21,36 @@ export function RecentLoans() {
       const { data, error } = await supabase
         .from('loans')
         .select(`
-          *,
-          book:books(title, author),
-          user:users(full_name)
+          id,
+          user_id,
+          book_id,
+          loan_date,
+          due_date,
+          return_date,
+          status,
+          created_at,
+          books!book_id(
+            title,
+            author
+          )
         `)
         .order('created_at', { ascending: false })
         .limit(5)
 
-      if (error) throw error
-      setLoans(data || [])
+      if (error) {
+        console.error('Erro ao buscar empréstimos:', error)
+        setLoans([])
+      } else {
+        // Transformar os dados para o formato esperado
+        const transformedData = (data || []).map(loan => ({
+          ...loan,
+          book: (loan as any).books
+        }))
+        setLoans(transformedData as any)
+      }
     } catch (error) {
       console.error('Erro ao buscar empréstimos:', error)
+      setLoans([])
     } finally {
       setLoading(false)
     }
@@ -98,10 +117,10 @@ export function RecentLoans() {
                   {getStatusIcon(loan)}
                   <div>
                     <p className="font-medium text-secondary-900">
-                      {loan.book?.title}
+                      {(loan as any).books?.title || loan.book?.title}
                     </p>
                     <p className="text-sm text-secondary-500">
-                      {loan.book?.author}
+                      {(loan as any).books?.author || loan.book?.author}
                     </p>
                     <p className="text-xs text-secondary-400">
                       Vencimento: {formatDate(loan.due_date)}

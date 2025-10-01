@@ -233,8 +233,8 @@ export function MyLoans() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-secondary-900">Meus Empréstimos</h1>
-          <p className="text-secondary-600 mt-1 md:mt-2 text-sm md:text-base">
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Meus Empréstimos</h1>
+          <p className="text-white/80 mt-1 md:mt-2 text-sm md:text-base">
             <span className="hidden sm:inline">Gerencie seus livros emprestados</span>
             <span className="sm:hidden">Seus livros</span>
           </p>
@@ -265,36 +265,36 @@ export function MyLoans() {
 
       {/* Estatísticas */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
+        <div className="bg-white/10 backdrop-blur-sm p-3 md:p-4 rounded-lg border border-white/20">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 md:h-5 md:w-5 text-primary-500" />
-            <span className="text-xs md:text-sm font-medium text-secondary-600">Total</span>
+            <BookOpen className="h-4 w-4 md:h-5 md:w-5 text-purple-400" />
+            <span className="text-xs md:text-sm font-medium text-white/80">Total</span>
           </div>
-          <p className="text-xl md:text-2xl font-bold text-secondary-900">{getLoanStats().total}</p>
+          <p className="text-xl md:text-2xl font-bold text-white">{getLoanStats().total}</p>
         </div>
         
-        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
+        <div className="bg-white/10 backdrop-blur-sm p-3 md:p-4 rounded-lg border border-white/20">
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
-            <span className="text-xs md:text-sm font-medium text-secondary-600">Ativos</span>
+            <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
+            <span className="text-xs md:text-sm font-medium text-white/80">Ativos</span>
           </div>
-          <p className="text-xl md:text-2xl font-bold text-blue-600">{getLoanStats().active}</p>
+          <p className="text-xl md:text-2xl font-bold text-blue-300">{getLoanStats().active}</p>
         </div>
         
-        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
+        <div className="bg-white/10 backdrop-blur-sm p-3 md:p-4 rounded-lg border border-white/20">
           <div className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
-            <span className="text-xs md:text-sm font-medium text-secondary-600">Devolvidos</span>
+            <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
+            <span className="text-xs md:text-sm font-medium text-white/80">Devolvidos</span>
           </div>
-          <p className="text-xl md:text-2xl font-bold text-green-600">{getLoanStats().returned}</p>
+          <p className="text-xl md:text-2xl font-bold text-green-300">{getLoanStats().returned}</p>
         </div>
         
-        <div className="bg-white p-3 md:p-4 rounded-lg border border-secondary-200">
+        <div className="bg-white/10 backdrop-blur-sm p-3 md:p-4 rounded-lg border border-white/20">
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 md:h-5 md:w-5 text-red-500" />
-            <span className="text-xs md:text-sm font-medium text-secondary-600">Atrasados</span>
+            <AlertCircle className="h-4 w-4 md:h-5 md:w-5 text-red-400" />
+            <span className="text-xs md:text-sm font-medium text-white/80">Atrasados</span>
           </div>
-          <p className="text-xl md:text-2xl font-bold text-red-600">{getLoanStats().overdue}</p>
+          <p className="text-xl md:text-2xl font-bold text-red-300">{getLoanStats().overdue}</p>
         </div>
       </div>
 
@@ -353,14 +353,14 @@ export function MyLoans() {
       <div className="space-y-4">
         {getFilteredLoans().length === 0 ? (
           <div className="text-center py-12">
-            <BookOpen className="h-16 w-16 text-secondary-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-secondary-900 mb-2">
+            <BookOpen className="h-16 w-16 text-white/60 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">
               {filter === 'all' ? 'Nenhum empréstimo encontrado' : 
                filter === 'active' ? 'Nenhum empréstimo ativo' :
                filter === 'returned' ? 'Nenhum empréstimo devolvido' :
                'Nenhum empréstimo atrasado'}
             </h3>
-            <p className="text-secondary-600">
+            <p className="text-white/80">
               {filter === 'all' ? 'Você ainda não fez nenhum empréstimo.' :
                filter === 'active' ? 'Todos os seus empréstimos foram devolvidos.' :
                filter === 'returned' ? 'Você ainda não devolveu nenhum livro.' :
@@ -386,20 +386,20 @@ export function MyLoans() {
                           className="w-12 h-16 sm:w-16 sm:h-20 object-cover rounded-lg border border-secondary-200"
                         />
                       ) : (
-                        <div className="w-12 h-16 sm:w-16 sm:h-20 bg-secondary-100 rounded-lg border border-secondary-200 flex items-center justify-center">
-                          <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-secondary-400" />
+                        <div className="w-12 h-16 sm:w-16 sm:h-20 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 flex items-center justify-center">
+                          <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-white/60" />
                         </div>
                       )}
                     </div>
 
                     {/* Informações do livro */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base md:text-lg font-semibold text-secondary-900 truncate">
+                      <h3 className="text-base md:text-lg font-semibold text-white truncate">
                         {loan.books.title}
                       </h3>
-                      <p className="text-sm md:text-base text-secondary-600 mb-2">por {loan.books.author}</p>
+                      <p className="text-sm md:text-base text-white/80 mb-2">por {loan.books.author}</p>
                       
-                      <div className="space-y-1 text-xs md:text-xs text-secondary-500">
+                      <div className="space-y-1 text-xs md:text-xs text-white/70">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
                           Emprestado em: {formatDate(loan.loan_date)}

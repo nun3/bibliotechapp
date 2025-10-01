@@ -4,7 +4,20 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+  console.error(`
+╔═══════════════════════════════════════════════════════════════════╗
+║  ⚠️  ERRO: Variáveis de ambiente do Supabase não configuradas    ║
+╠═══════════════════════════════════════════════════════════════════╣
+║  Por favor, crie o arquivo .env.local na raiz do projeto com:     ║
+║                                                                    ║
+║  VITE_SUPABASE_URL=sua_url_do_supabase                            ║
+║  VITE_SUPABASE_ANON_KEY=sua_chave_anonima                         ║
+║                                                                    ║
+║  Você pode copiar o arquivo env.example e renomeá-lo:             ║
+║  $ cp env.example .env.local                                      ║
+╚═══════════════════════════════════════════════════════════════════╝
+  `)
+  throw new Error('Missing Supabase environment variables. Please check console for details.')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)

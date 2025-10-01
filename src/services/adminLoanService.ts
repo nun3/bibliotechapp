@@ -213,9 +213,32 @@ export class AdminLoanService {
       const { data: fullLoan, error: fetchError } = await supabase
         .from('loans')
         .select(`
-          *,
-          users(*),
-          books(*)
+          id,
+          user_id,
+          book_id,
+          loan_date,
+          due_date,
+          return_date,
+          status,
+          created_at,
+          updated_at,
+          users!user_id(
+            id,
+            email,
+            full_name,
+            library_card_number,
+            role,
+            is_active
+          ),
+          books!book_id(
+            id,
+            title,
+            author,
+            isbn,
+            cover_url,
+            available_copies,
+            total_copies
+          )
         `)
         .eq('id', loan.id)
         .single()
@@ -246,65 +269,110 @@ export class AdminLoanService {
     sortBy?: 'loan_date' | 'due_date' | 'created_at'
     sortOrder?: 'asc' | 'desc'
   } = {}): Promise<{ loans: Loan[]; total: number }> {
-    const {
-      page = 1,
-      limit = 20,
-      search = '',
-      status = 'all',
-      userId,
-      bookId,
-      sortBy = 'loan_date',
-      sortOrder = 'desc'
-    } = options
+    try {
+      const {
+        page = 1,
+        limit = 20,
+        search = '',
+        status = 'all',
+        userId,
+        bookId,
+        sortBy = 'loan_date',
+        sortOrder = 'desc'
+      } = options
 
-    let query = supabase
-      .from('loans')
-      .select(`
-        *,
-        users(*),
-        books(*)
-      `, { count: 'exact' })
+      let query = supabase
+        .from('loans')
+        .select(`
+          id,
+          user_id,
+          book_id,
+          loan_date,
+          due_date,
+          return_date,
+          status,
+          created_at,
+          updated_at,
+          users!user_id(
+            id,
+            email,
+            full_name,
+            library_card_number,
+            role,
+            is_active
+          ),
+          books!book_id(
+            id,
+            title,
+            author,
+            isbn,
+            cover_url,
+            available_copies,
+            total_copies
+          )
+        `, { count: 'exact' })
 
-    // Aplicar filtros
-    if (search) {
-      query = query.or(`users.full_name.ilike.%${search}%,users.email.ilike.%${search}%,books.title.ilike.%${search}%,books.author.ilike.%${search}%`)
-    }
-
-    if (status !== 'all') {
-      if (status === 'overdue') {
-        // Empréstimos em atraso (status ativo mas data de vencimento passou)
-        query = query.eq('status', 'active').lt('due_date', new Date().toISOString())
-      } else {
-        query = query.eq('status', status)
+      // Aplicar filtros básicos
+      if (status !== 'all') {
+        if (status === 'overdue') {
+          // Empréstimos em atraso (status ativo mas data de vencimento passou)
+          query = query.eq('status', 'active').lt('due_date', new Date().toISOString())
+        } else {
+          query = query.eq('status', status)
+        }
       }
-    }
 
-    if (userId) {
-      query = query.eq('user_id', userId)
-    }
+      if (userId) {
+        query = query.eq('user_id', userId)
+      }
 
-    if (bookId) {
-      query = query.eq('book_id', bookId)
-    }
+      if (bookId) {
+        query = query.eq('book_id', bookId)
+      }
 
-    // Aplicar ordenação
-    query = query.order(sortBy, { ascending: sortOrder === 'asc' })
+      // Aplicar ordenação
+      query = query.order(sortBy, { ascending: sortOrder === 'asc' })
 
-    // Aplicar paginação
-    const from = (page - 1) * limit
-    const to = from + limit - 1
-    query = query.range(from, to)
+      const { data, error, count } = await query
 
-    const { data, error, count } = await query
+      if (error) {
+        console.error('Erro ao buscar empréstimos:', error)
+        throw new Error('Erro ao buscar empréstimos')
+      }
 
-    if (error) {
+      let filteredData = data || []
+
+      // Aplicar busca em memória (depois de carregar os dados)
+      if (search) {
+        const searchLower = search.toLowerCase()
+        filteredData = filteredData.filter(loan => {
+          const userName = (loan.users as any)?.full_name?.toLowerCase() || ''
+          const userEmail = (loan.users as any)?.email?.toLowerCase() || ''
+          const bookTitle = (loan.books as any)?.title?.toLowerCase() || ''
+          const bookAuthor = (loan.books as any)?.author?.toLowerCase() || ''
+          
+          return userName.includes(searchLower) ||
+                 userEmail.includes(searchLower) ||
+                 bookTitle.includes(searchLower) ||
+                 bookAuthor.includes(searchLower)
+        })
+      }
+
+      // Aplicar paginação em memória
+      const from = (page - 1) * limit
+      const to = from + limit
+      const paginatedData = filteredData.slice(from, to)
+
+      return {
+        loans: paginatedData,
+        total: filteredData.length
+      }
+    } catch (error) {
       console.error('Erro ao buscar empréstimos:', error)
-      throw new Error('Erro ao buscar empréstimos')
-    }
-
-    return {
-      loans: data || [],
-      total: count || 0
+      return {
+        loans: [],
+        total: 0
+      }
     }
   }
 
@@ -316,7 +384,19 @@ export class AdminLoanService {
       // Buscar o empréstimo
       const { data: loan, error: loanError } = await supabase
         .from('loans')
-        .select('*, books(*)')
+        .select(`
+          id,
+          user_id,
+          book_id,
+          loan_date,
+          due_date,
+          return_date,
+          status,
+          books!book_id(
+            id,
+            available_copies
+          )
+        `)
         .eq('id', returnData.loan_id)
         .single()
 
@@ -391,7 +471,7 @@ export class AdminLoanService {
         // Livros mais populares (últimos 30 dias)
         supabase
           .from('loans')
-          .select('book_id, books(title)')
+          .select('book_id, books!book_id(title)')
           .gte('loan_date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
           .eq('status', 'active')
       ])
@@ -433,8 +513,24 @@ export class AdminLoanService {
     let query = supabase
       .from('loans')
       .select(`
-        *,
-        books(*)
+        id,
+        user_id,
+        book_id,
+        loan_date,
+        due_date,
+        return_date,
+        status,
+        created_at,
+        updated_at,
+        books!book_id(
+          id,
+          title,
+          author,
+          isbn,
+          cover_url,
+          available_copies,
+          total_copies
+        )
       `)
       .eq('user_id', userId)
 

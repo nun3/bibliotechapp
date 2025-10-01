@@ -28,8 +28,8 @@ export function Catalog() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-secondary-900">Catálogo de Livros</h1>
-        <p className="text-secondary-600 mt-2">
+        <h1 className="text-3xl font-bold text-white">Catálogo de Livros</h1>
+        <p className="text-white/80 mt-2">
           Explore nossa coleção de livros e encontre sua próxima leitura
         </p>
       </div>

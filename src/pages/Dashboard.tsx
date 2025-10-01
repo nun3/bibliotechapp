@@ -61,11 +61,13 @@ export function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-secondary-900">Dashboard</h1>
-        <p className="text-secondary-600 mt-2">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent mb-2">
+          Dashboard
+        </h1>
+        <p className="text-white/70 text-lg">
           Visão geral da sua biblioteca digital
         </p>
       </div>
@@ -118,13 +120,13 @@ export function Dashboard() {
                 { title: 'Harry Potter', author: 'J.K. Rowling', loans: 10 },
                 { title: 'Dom Casmurro', author: 'Machado de Assis', loans: 8 },
               ].map((book, index) => (
-                <div key={index} className="flex items-center justify-between">
+                <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
                   <div>
-                    <p className="font-medium text-secondary-900">{book.title}</p>
-                    <p className="text-sm text-secondary-500">{book.author}</p>
+                    <p className="font-medium text-white">{book.title}</p>
+                    <p className="text-sm text-white/60">{book.author}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-primary-600">{book.loans} empréstimos</p>
+                    <p className="text-sm font-medium text-purple-300">{book.loans} empréstimos</p>
                   </div>
                 </div>
               ))}
@@ -140,30 +142,39 @@ export function Dashboard() {
           <CardDescription>Acesso rápido às funcionalidades principais</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div 
               onClick={handleSearchBooks}
-              className="p-4 border border-secondary-200 rounded-lg hover:bg-secondary-50 cursor-pointer transition-colors group"
+              className="p-6 border border-white/20 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition-all duration-200 group transform hover:scale-[1.02] hover:shadow-xl"
             >
-              <BookOpen className="h-8 w-8 text-primary-600 mb-2 group-hover:text-primary-700 transition-colors" />
-              <h3 className="font-medium text-secondary-900 group-hover:text-secondary-800">Catálogo</h3>
-              <p className="text-sm text-secondary-500">Explore e busque livros</p>
+              <div className="relative mb-4">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-400 rounded-lg blur-sm opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                <BookOpen className="relative h-10 w-10 text-white" />
+              </div>
+              <h3 className="font-semibold text-white group-hover:text-purple-200 transition-colors mb-2">Catálogo</h3>
+              <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors">Explore e busque livros</p>
             </div>
             <div 
               onClick={handleMyLoans}
-              className="p-4 border border-secondary-200 rounded-lg hover:bg-secondary-50 cursor-pointer transition-colors group"
+              className="p-6 border border-white/20 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition-all duration-200 group transform hover:scale-[1.02] hover:shadow-xl"
             >
-              <Calendar className="h-8 w-8 text-primary-600 mb-2 group-hover:text-primary-700 transition-colors" />
-              <h3 className="font-medium text-secondary-900 group-hover:text-secondary-800">Meus Empréstimos</h3>
-              <p className="text-sm text-secondary-500">Veja seus empréstimos ativos</p>
+              <div className="relative mb-4">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-lg blur-sm opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                <Calendar className="relative h-10 w-10 text-white" />
+              </div>
+              <h3 className="font-semibold text-white group-hover:text-blue-200 transition-colors mb-2">Meus Empréstimos</h3>
+              <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors">Veja seus empréstimos ativos</p>
             </div>
             <div 
               onClick={handleProfile}
-              className="p-4 border border-secondary-200 rounded-lg hover:bg-secondary-50 cursor-pointer transition-colors group"
+              className="p-6 border border-white/20 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition-all duration-200 group transform hover:scale-[1.02] hover:shadow-xl"
             >
-              <User className="h-8 w-8 text-primary-600 mb-2 group-hover:text-primary-700 transition-colors" />
-              <h3 className="font-medium text-secondary-900 group-hover:text-secondary-800">Perfil</h3>
-              <p className="text-sm text-secondary-500">Gerencie sua conta</p>
+              <div className="relative mb-4">
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-purple-400 rounded-lg blur-sm opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                <User className="relative h-10 w-10 text-white" />
+              </div>
+              <h3 className="font-semibold text-white group-hover:text-pink-200 transition-colors mb-2">Perfil</h3>
+              <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors">Gerencie sua conta</p>
             </div>
           </div>
         </CardContent>

@@ -16,14 +16,14 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+  const baseStyles = 'inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
   
   const variants = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700',
-    secondary: 'bg-secondary-100 text-secondary-900 hover:bg-secondary-200',
-    outline: 'border border-secondary-300 bg-transparent hover:bg-secondary-50',
-    ghost: 'hover:bg-secondary-100',
-    destructive: 'bg-red-600 text-white hover:bg-red-700'
+    primary: 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 shadow-lg hover:shadow-xl',
+    secondary: 'bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm',
+    outline: 'border border-white/30 bg-transparent text-white hover:bg-white/10 backdrop-blur-sm',
+    ghost: 'text-white/70 hover:bg-white/10 hover:text-white',
+    destructive: 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl'
   }
   
   const sizes = {

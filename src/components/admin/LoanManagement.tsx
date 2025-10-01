@@ -205,8 +205,8 @@ export function LoanManagement() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Gerenciar Empréstimos</h1>
-          <p className="text-gray-600 text-sm md:text-base">
+          <h1 className="text-xl md:text-2xl font-bold text-white">Gerenciar Empréstimos</h1>
+          <p className="text-white/80 text-sm md:text-base">
             <span className="hidden sm:inline">Realize empréstimos e devoluções para usuários da biblioteca</span>
             <span className="sm:hidden">Empréstimos e devoluções</span>
           </p>
@@ -235,8 +235,8 @@ export function LoanManagement() {
           <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm font-medium text-gray-600">Empréstimos Ativos</p>
-                <p className="text-xl md:text-2xl font-bold text-blue-600">{stats.totalActiveLoans}</p>
+                <p className="text-xs md:text-sm font-medium text-white/80">Empréstimos Ativos</p>
+                <p className="text-xl md:text-2xl font-bold text-blue-300">{stats.totalActiveLoans}</p>
               </div>
               <BookOpen className="h-6 w-6 md:h-8 md:w-8 text-blue-500" />
             </div>
@@ -247,8 +247,8 @@ export function LoanManagement() {
           <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm font-medium text-gray-600">Em Atraso</p>
-                <p className="text-xl md:text-2xl font-bold text-red-600">{stats.overdueLoans}</p>
+                <p className="text-xs md:text-sm font-medium text-white/80">Em Atraso</p>
+                <p className="text-xl md:text-2xl font-bold text-red-300">{stats.overdueLoans}</p>
               </div>
               <AlertTriangle className="h-6 w-6 md:h-8 md:w-8 text-red-500" />
             </div>
@@ -259,8 +259,8 @@ export function LoanManagement() {
           <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm font-medium text-gray-600">Devolvidos</p>
-                <p className="text-xl md:text-2xl font-bold text-green-600">{stats.totalReturnedLoans}</p>
+                <p className="text-xs md:text-sm font-medium text-white/80">Devolvidos</p>
+                <p className="text-xl md:text-2xl font-bold text-green-300">{stats.totalReturnedLoans}</p>
               </div>
               <CheckCircle className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
             </div>
@@ -271,8 +271,8 @@ export function LoanManagement() {
           <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm font-medium text-gray-600">Empréstimos Hoje</p>
-                <p className="text-xl md:text-2xl font-bold text-orange-600">{stats.loansToday}</p>
+                <p className="text-xs md:text-sm font-medium text-white/80">Empréstimos Hoje</p>
+                <p className="text-xl md:text-2xl font-bold text-orange-300">{stats.loansToday}</p>
               </div>
               <Calendar className="h-6 w-6 md:h-8 md:w-8 text-orange-500" />
             </div>
@@ -283,8 +283,8 @@ export function LoanManagement() {
           <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm font-medium text-gray-600">Livros Populares</p>
-                <p className="text-xl md:text-2xl font-bold text-purple-600">{stats.popularBooks.length}</p>
+                <p className="text-xs md:text-sm font-medium text-white/80">Livros Populares</p>
+                <p className="text-xl md:text-2xl font-bold text-purple-300">{stats.popularBooks.length}</p>
               </div>
               <Book className="h-6 w-6 md:h-8 md:w-8 text-purple-500" />
             </div>
@@ -298,7 +298,7 @@ export function LoanManagement() {
           <div className="flex flex-col md:flex-row gap-3 md:gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
                 <Input
                   placeholder="Buscar por usuário, livro, autor..."
                   value={searchTerm}
@@ -312,22 +312,22 @@ export function LoanManagement() {
               <select
                 value={selectedStatus}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                className="px-3 py-2 border border-white/20 bg-white/10 backdrop-blur-sm rounded-md text-sm text-white"
               >
-                <option value="all">Todos os Status</option>
-                <option value="active">Ativos</option>
-                <option value="overdue">Em Atraso</option>
-                <option value="returned">Devolvidos</option>
+                <option value="all" className="bg-gray-800 text-white">Todos os Status</option>
+                <option value="active" className="bg-gray-800 text-white">Ativos</option>
+                <option value="overdue" className="bg-gray-800 text-white">Em Atraso</option>
+                <option value="returned" className="bg-gray-800 text-white">Devolvidos</option>
               </select>
 
               <select
                 value={sortBy}
                 onChange={(e) => handleFilterChange('sort', e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                className="px-3 py-2 border border-white/20 bg-white/10 backdrop-blur-sm rounded-md text-sm text-white"
               >
-                <option value="loan_date">Data do Empréstimo</option>
-                <option value="due_date">Data de Vencimento</option>
-                <option value="created_at">Data de Criação</option>
+                <option value="loan_date" className="bg-gray-800 text-white">Data do Empréstimo</option>
+                <option value="due_date" className="bg-gray-800 text-white">Data de Vencimento</option>
+                <option value="created_at" className="bg-gray-800 text-white">Data de Criação</option>
               </select>
 
               <Button
@@ -356,12 +356,12 @@ export function LoanManagement() {
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="mt-2 text-gray-600">Carregando empréstimos...</p>
+              <p className="mt-2 text-white/80">Carregando empréstimos...</p>
             </div>
           ) : loans.length === 0 ? (
             <div className="p-8 text-center">
-              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Nenhum empréstimo encontrado</p>
+              <BookOpen className="h-12 w-12 text-white/60 mx-auto mb-4" />
+              <p className="text-white/80">Nenhum empréstimo encontrado</p>
             </div>
           ) : (
             <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">

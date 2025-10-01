@@ -258,7 +258,7 @@ export function BookGrid({ onLoan, onReserve }: BookGridProps) {
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-600"></div>
                   </div>
                 ) : (
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-secondary-400" />
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
                 )}
                 <input
                   ref={searchInputRef}
@@ -267,7 +267,7 @@ export function BookGrid({ onLoan, onReserve }: BookGridProps) {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="flex h-10 w-full rounded-lg border border-secondary-300 bg-white px-3 py-2 pl-10 text-sm placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  className="flex h-10 w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-3 py-2 pl-10 text-sm text-white placeholder:text-white/50 focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400/50"
                 />
               </div>
             </div>
@@ -275,11 +275,11 @@ export function BookGrid({ onLoan, onReserve }: BookGridProps) {
               <select
                 value={selectedGenre}
                 onChange={(e) => setSelectedGenre(e.target.value)}
-                className="px-3 py-2 border border-secondary-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="px-3 py-2 border border-white/20 bg-white/10 backdrop-blur-sm rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400/50"
               >
-                <option value="">Todos os gêneros</option>
+                <option value="" className="bg-gray-800 text-white">Todos os gêneros</option>
                 {genres.map(genre => (
-                  <option key={genre} value={genre}>{genre}</option>
+                  <option key={genre} value={genre} className="bg-gray-800 text-white">{genre}</option>
                 ))}
               </select>
               <Button 
@@ -292,16 +292,16 @@ export function BookGrid({ onLoan, onReserve }: BookGridProps) {
               >
                 <Filter className="h-4 w-4" />
               </Button>
-              <div className="flex border border-secondary-300 rounded-lg">
+              <div className="flex border border-white/20 rounded-lg">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 ${viewMode === 'grid' ? 'bg-primary-100 text-primary-600' : 'text-secondary-500'}`}
+                  className={`p-2 ${viewMode === 'grid' ? 'bg-purple-500/20 text-purple-300' : 'text-white/70'}`}
                 >
                   <Grid className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 ${viewMode === 'list' ? 'bg-primary-100 text-primary-600' : 'text-secondary-500'}`}
+                  className={`p-2 ${viewMode === 'list' ? 'bg-purple-500/20 text-purple-300' : 'text-white/70'}`}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -313,7 +313,7 @@ export function BookGrid({ onLoan, onReserve }: BookGridProps) {
 
       {/* Results */}
       <div className="flex justify-between items-center">
-        <p className="text-secondary-600">
+        <p className="text-white/80">
           {books.length} livro{books.length !== 1 ? 's' : ''} encontrado{books.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -326,11 +326,11 @@ export function BookGrid({ onLoan, onReserve }: BookGridProps) {
       ) : books.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <BookOpen className="h-16 w-16 text-secondary-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-secondary-900 mb-2">
+            <BookOpen className="h-16 w-16 text-white/60 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">
               Nenhum livro encontrado
             </h3>
-            <p className="text-secondary-500 mb-4">
+            <p className="text-white/70 mb-4">
               {searchTerm || selectedGenre 
                 ? 'Nenhum livro corresponde aos filtros aplicados'
                 : 'Nenhum livro disponível no momento'

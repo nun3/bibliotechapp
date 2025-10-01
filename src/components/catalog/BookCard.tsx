@@ -31,14 +31,14 @@ export function BookCard({ book, onViewDetails, onReserve, showActions = true }:
       
       <CardContent className="flex-1 p-4">
         <div className="space-y-2">
-          <h3 className="font-semibold text-secondary-900 line-clamp-2">
+          <h3 className="font-semibold text-white line-clamp-2">
             {book.title}
           </h3>
-          <p className="text-sm text-secondary-600 flex items-center">
+          <p className="text-sm text-white/80 flex items-center">
             <User className="h-4 w-4 mr-1" />
             {book.author}
           </p>
-          <p className="text-sm text-secondary-500 flex items-center">
+          <p className="text-sm text-white/70 flex items-center">
             <Calendar className="h-4 w-4 mr-1" />
             {book.publication_year}
           </p>
@@ -48,13 +48,13 @@ export function BookCard({ book, onViewDetails, onReserve, showActions = true }:
         </div>
         
         {book.description && (
-          <p className="text-sm text-secondary-500 mt-3 line-clamp-3">
+          <p className="text-sm text-white/70 mt-3 line-clamp-3">
             {book.description}
           </p>
         )}
         
         <div className="mt-3 flex items-center justify-between">
-          <span className="text-sm font-medium text-secondary-700">
+          <span className="text-sm font-medium text-white/80">
             {book.available_copies} de {book.total_copies} disponíveis
           </span>
           <Badge 

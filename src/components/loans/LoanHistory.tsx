@@ -153,15 +153,20 @@ export function LoanHistory({ isOpen, onClose }: LoanHistoryProps) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-secondary-200">
+        <div className="flex items-center justify-between p-6 border-b border-white/20">
           <div>
-            <h2 className="text-2xl font-bold text-secondary-900">Histórico de Empréstimos</h2>
-            <p className="text-secondary-600">Todos os seus empréstimos e devoluções</p>
+            <h2 className="text-2xl font-bold text-white">Histórico de Empréstimos</h2>
+            <p className="text-white/70">Todos os seus empréstimos e devoluções</p>
           </div>
-          <Button variant="outline" size="sm" onClick={onClose}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onClose}
+            className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white transition-all duration-200"
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>

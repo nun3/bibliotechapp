@@ -101,8 +101,8 @@ export function Profile() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-secondary-900">Meu Perfil</h1>
-        <p className="text-secondary-600 mt-2">
+        <h1 className="text-3xl font-bold text-white">Meu Perfil</h1>
+        <p className="text-white/80 mt-2">
           Gerencie suas informações pessoais e configurações
         </p>
       </div>
@@ -170,7 +170,7 @@ export function Profile() {
                   <div className="text-2xl font-bold text-primary-800 mb-2">
                     {user?.library_card_number}
                   </div>
-                  <p className="text-sm text-primary-600">Número da Carteirinha</p>
+                  <p className="text-sm text-white/80">Número da Carteirinha</p>
                 </div>
                 <Badge variant={user?.is_active ? 'success' : 'destructive'}>
                   {user?.is_active ? 'Ativa' : 'Inativa'}
@@ -189,14 +189,14 @@ export function Profile() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="text-sm font-medium text-secondary-600">Membro desde</p>
-                <p className="text-secondary-900">
+                <p className="text-sm font-medium text-white/80">Membro desde</p>
+                <p className="text-white">
                   {user?.created_at ? formatDate(user.created_at) : 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-secondary-600">Última atualização</p>
-                <p className="text-secondary-900">
+                <p className="text-sm font-medium text-white/80">Última atualização</p>
+                <p className="text-white">
                   {user?.updated_at ? formatDate(user.updated_at) : 'N/A'}
                 </p>
               </div>

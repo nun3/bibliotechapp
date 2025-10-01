@@ -22,7 +22,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
   }
 
   return (
-    <header className="bg-white border-b border-secondary-200 px-4 md:px-6 py-4">
+    <header className="backdrop-blur-xl bg-white/10 border-b border-white/20 px-4 md:px-6 py-4 relative z-20">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {/* Mobile menu button */}
@@ -30,12 +30,12 @@ export function Header({ onMenuToggle }: HeaderProps) {
             variant="ghost"
             size="sm"
             onClick={onMenuToggle}
-            className="md:hidden"
+            className="md:hidden text-white/90 hover:bg-white/20 hover:text-white"
           >
             <Menu className="h-5 w-5" />
           </Button>
           
-          <h1 className="text-xl md:text-2xl font-semibold text-secondary-900">
+          <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
             Biblioteca Digital
           </h1>
         </div>
@@ -43,23 +43,24 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <div className="flex items-center space-x-2 md:space-x-4">
           {/* Search - hidden on small screens */}
           <form onSubmit={handleSearch} className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-secondary-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
             <Input
               placeholder="Buscar livros..."
-              className="w-64 pl-10"
+              className="w-64 pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-purple-400 focus:ring-purple-400/50 backdrop-blur-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </form>
           
           {/* Mobile search button */}
-          <Button variant="ghost" size="sm" className="md:hidden">
+          <Button variant="ghost" size="sm" className="md:hidden text-white/90 hover:bg-white/20 hover:text-white">
             <Search className="h-5 w-5" />
           </Button>
           
           {/* Notifications */}
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="text-white/90 hover:bg-white/20 hover:text-white relative">
             <Bell className="h-5 w-5" />
+            <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full animate-pulse"></span>
           </Button>
         </div>
       </div>
